@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/prepare-result/0.1",
+  "title": "CommandPrepareResult (M0 draft)",
+  "description": "来源：能力契约 6.2。预览必须区分精确影响与估计；无法描述高影响操作的资源范围时拒绝自动执行，故 estimateStatus=unknown 时必须要求确认。示例 ID 与摘要均为占位值。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "data"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commandId",
+        "state",
+        "capabilityId",
+        "contractVersion",
+        "commandDigest",
+        "expiresAt",
+        "effectivePolicy",
+        "preview",
+        "confirmation"
+      ],
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "awaiting_confirmation",
+            "ready"
+          ]
+        },
+        "capabilityId": {
+          "type": "string"
+        },
+        "contractVersion": {
+          "type": "string"
+        },
+        "commandDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "effectivePolicy": {
+          "enum": [
+            "deny",
+            "draft_only",
+            "confirm",
+            "allow"
+          ]
+        },
+        "preview": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "messageKey",
+            "effectScope",
+            "estimateStatus"
+          ],
+          "properties": {
+            "messageKey": {
+              "type": "string"
+            },
+            "messageParams": {
+              "type": "object"
+            },
+            "effectScope": {
+              "type": "string"
+            },
+            "estimateStatus": {
+              "enum": [
+                "exact",
+                "bounded_estimate",
+                "unknown"
+              ]
+            }
+          }
+        },
+        "confirmation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "interactionRef": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "awaiting_confirmation"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confirmation": {
+                "properties": {
+                  "required": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "preview": {
+                "properties": {
+                  "estimateStatus": {
+                    "const": "unknown"
+                  }
+                },
+                "required": [
+                  "estimateStatus"
+                ]
+              }
+            },
+            "required": [
+              "preview"
+            ]
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "awaiting_confirmation"
+              },
+              "effectivePolicy": {
+                "not": {
+                  "const": "allow"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "effectivePolicy": {
+                "const": "deny"
+              }
+            },
+            "required": [
+              "effectivePolicy"
+            ]
+          },
+          "then": {
+            "not": {
+              "properties": {
+                "state": {
+                  "const": "ready"
+                }
+              },
+              "required": [
+                "state"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

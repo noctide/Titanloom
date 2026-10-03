@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/channel-connection/0.1",
+  "title": "ChannelConnection (M0 draft)",
+  "description": "来源：集成与消息通道子方案 3。目标地址与令牌只能以 SecretRef 表示，Schema 不允许明文 url、token 字段。 修订生命周期（revisionState）、激活（见 config-activation）与运行开关（operationalState）是三个独立维度，不用单一 state 承载。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "channelId",
+    "revision",
+    "channelType",
+    "targetSecretRef",
+    "maxDataClass",
+    "timeoutSeconds",
+    "maxResponseBytes",
+    "rateLimit",
+    "egressApprovalRef",
+    "revisionState",
+    "operationalState"
+  ],
+  "properties": {
+    "channelId": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "displayNameKey": {
+      "type": "string"
+    },
+    "channelType": {
+      "enum": [
+        "generic_webhook"
+      ]
+    },
+    "presetRef": {
+      "type": "string"
+    },
+    "targetSecretRef": {
+      "type": "string",
+      "pattern": "^secret:[A-Za-z0-9_./-]+$"
+    },
+    "authSecretRef": {
+      "type": "string",
+      "pattern": "^secret:[A-Za-z0-9_./-]+$"
+    },
+    "method": {
+      "enum": [
+        "POST",
+        "PUT"
+      ]
+    },
+    "maxDataClass": {
+      "enum": [
+        "public",
+        "internal",
+        "restricted"
+      ]
+    },
+    "timeoutSeconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30
+    },
+    "maxResponseBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1048576
+    },
+    "followRedirects": {
+      "const": false
+    },
+    "verifyTls": {
+      "type": "boolean"
+    },
+    "rateLimit": {
+      "type": "object",
+      "required": [
+        "perMinute",
+        "concurrency"
+      ],
+      "properties": {
+        "perMinute": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        }
+      },
+      "additionalProperties": false
+    },
+    "retry": {
+      "type": "object",
+      "properties": {
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "maxTotalSeconds": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "egressApprovalRef": {
+      "type": "string"
+    },
+    "testRecipientScopeRef": {
+      "type": "string"
+    },
+    "revisionState": {
+      "enum": [
+        "draft",
+        "validated",
+        "published",
+        "superseded",
+        "withdrawn"
+      ],
+      "description": "ConfigRevision 生命周期（后台治理 7.2）；published 后内容不可变"
+    },
+    "operationalState": {
+      "enum": [
+        "enabled",
+        "paused",
+        "disabled"
+      ],
+      "description": "运行开关：与修订发布、激活分离；paused / disabled 可立即生效（紧急禁用，后台治理 7.4）"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "verifyTls": {
+            "const": false
+          }
+        },
+        "required": [
+          "verifyTls"
+        ]
+      },
+      "then": {
+        "required": [
+          "tlsWaiverRef"
+        ],
+        "description": "关闭证书校验须有显式批准"
+      }
+    }
+  ]
+}

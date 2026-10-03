@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/idempotency-record/0.1",
+  "title": "IdempotencyRecord (M0 draft)",
+  "description": "来源：能力契约 7.1、14.2。作用域 workspaceId+principalId+delegationId(人工为空)+capabilityId+contractMajor+Idempotency-Key 唯一；同键同摘要返回原命令，同键不同摘要返回 IDEMPOTENCY_CONFLICT；清理后保留有界 tombstone，超出保证期拒绝盲目重放。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workspaceId",
+    "principalId",
+    "capabilityId",
+    "contractMajor",
+    "idempotencyKey",
+    "requestDigest",
+    "commandId",
+    "createdAt",
+    "retainUntil",
+    "tombstone"
+  ],
+  "properties": {
+    "workspaceId": {
+      "type": "string"
+    },
+    "principalId": {
+      "type": "string"
+    },
+    "delegationId": {
+      "type": "string"
+    },
+    "capabilityId": {
+      "type": "string"
+    },
+    "contractMajor": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "requestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "commandId": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "retainUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tombstone": {
+      "type": "boolean",
+      "description": "true 表示完整记录已清理，仅留摘要索引"
+    }
+  }
+}

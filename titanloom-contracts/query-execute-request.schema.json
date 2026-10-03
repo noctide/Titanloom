@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/query-execute-request/0.1",
+  "title": "QueryExecuteRequest (M0 draft)",
+  "description": "来源：能力契约 9.1、9.2（titanloom.data.query.execute）。固定 queryVersion 与参数；不允许提交任意底层连接或 SQL；snapshot 模式必须带 snapshotId，不支持时返回错误而不是悄悄降为 live。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "queryVersion",
+    "parameters",
+    "page",
+    "consistency"
+  ],
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "queryVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "limit"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "绑定 Query、参数摘要、排序、快照、主体权限上下文和有效期，不是授权票据"
+        }
+      }
+    },
+    "consistency": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "snapshot",
+            "live"
+          ]
+        },
+        "snapshotId": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "consistency": {
+            "properties": {
+              "mode": {
+                "const": "snapshot"
+              }
+            }
+          }
+        },
+        "required": [
+          "consistency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consistency": {
+            "required": [
+              "snapshotId"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

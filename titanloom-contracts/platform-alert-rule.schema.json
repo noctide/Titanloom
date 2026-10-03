@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/platform-alert-rule/0.1",
+  "title": "PlatformAlertRule (M0 draft)",
+  "description": "来源：后台治理 12.1。仅用于基础设施、公共运行机制和治理规则告警；领域业务异常（如 AttendanceAlert）归所属领域（ADR-009）。静默不删除事件。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ruleId",
+    "revision",
+    "scope",
+    "signal",
+    "windowSeconds",
+    "threshold",
+    "severity",
+    "dedupeKeyTemplate",
+    "recovery",
+    "routeRefs"
+  ],
+  "properties": {
+    "ruleId": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scope": {
+      "type": "string"
+    },
+    "signal": {
+      "enum": [
+        "service_availability",
+        "api_latency",
+        "api_error_rate",
+        "db_connection_usage",
+        "queue_backlog",
+        "queue_oldest_wait",
+        "executor_heartbeat",
+        "disk_usage",
+        "temp_space",
+        "backup_result",
+        "projection_lag",
+        "egress_failure",
+        "channel_failure"
+      ]
+    },
+    "windowSeconds": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "threshold": {
+      "type": "number"
+    },
+    "comparison": {
+      "enum": [
+        ">",
+        ">=",
+        "<",
+        "<="
+      ]
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ]
+    },
+    "dedupeKeyTemplate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recovery": {
+      "type": "object",
+      "required": [
+        "condition"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "condition": {
+          "type": "string"
+        },
+        "holdSeconds": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "routeRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "maintenanceSilenceRef": {
+      "type": "string"
+    },
+    "revisionState": {
+      "enum": [
+        "draft",
+        "validated",
+        "published",
+        "superseded",
+        "withdrawn"
+      ]
+    },
+    "operationalState": {
+      "enum": [
+        "enabled",
+        "paused",
+        "disabled"
+      ]
+    }
+  }
+}

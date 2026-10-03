@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/audit-event/0.1",
+  "title": "AuditEvent (M0 draft)",
+  "description": "来源：后台治理 12.2、能力契约 13。前后值只存摘要，不存秘密与无必要业务数据；审计是证据不是控制入口。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventId",
+    "occurredAt",
+    "receivedAt",
+    "principalId",
+    "capabilityId",
+    "contractVersion",
+    "target",
+    "policyVersionSet",
+    "result"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "receivedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "principalId": {
+      "type": "string"
+    },
+    "executorId": {
+      "type": "string"
+    },
+    "callerType": {
+      "type": "string"
+    },
+    "delegationId": {
+      "type": "string"
+    },
+    "capabilityId": {
+      "type": "string"
+    },
+    "contractVersion": {
+      "type": "string"
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "beforeDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "afterDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "policyVersionSet": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "confirmationId": {
+      "type": "string"
+    },
+    "commandId": {
+      "type": "string"
+    },
+    "jobId": {
+      "type": "string"
+    },
+    "result": {
+      "enum": [
+        "accepted",
+        "succeeded",
+        "failed",
+        "denied",
+        "partial",
+        "unknown"
+      ]
+    },
+    "evidenceRef": {
+      "type": "string"
+    }
+  }
+}

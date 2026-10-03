@@ -1,0 +1,237 @@
+{
+  "_note": "M0 草案：错误码注册表。documented 取自能力契约 12.2；proposed 为其他文档要求但尚无代码的拟定项，待冻结。retryable 仅表示协议允许按 recoveryAction 恢复，不是可无限重新提交。",
+  "codes": [
+    {
+      "code": "INVALID_REQUEST",
+      "httpStatus": 400,
+      "retryable": false,
+      "recoveryAction": "fix_input",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "INPUT_VALIDATION_FAILED",
+      "httpStatus": 422,
+      "retryable": false,
+      "recoveryAction": "fix_input",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "AUTHENTICATION_REQUIRED",
+      "httpStatus": 401,
+      "retryable": false,
+      "recoveryAction": "reauthenticate",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "TOKEN_EXPIRED",
+      "httpStatus": 401,
+      "retryable": false,
+      "recoveryAction": "reauthenticate",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "ACCESS_DENIED",
+      "httpStatus": 403,
+      "retryable": false,
+      "recoveryAction": "stop",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "DELEGATION_REVOKED",
+      "httpStatus": 403,
+      "retryable": false,
+      "recoveryAction": "stop",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "retryable": false,
+      "recoveryAction": "none",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "CONFIRMATION_REQUIRED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "confirm_then_submit",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "RESOURCE_VERSION_CONFLICT",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "refresh_and_prepare",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "IDEMPOTENCY_CONFLICT",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "check_intent",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "CAPABILITY_DISABLED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "stop_or_migrate",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "CONTRACT_VERSION_UNSUPPORTED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "stop_or_migrate",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "COMMAND_EXPIRED",
+      "httpStatus": 410,
+      "retryable": false,
+      "recoveryAction": "check_business_fact",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "RESULT_EXPIRED",
+      "httpStatus": 410,
+      "retryable": false,
+      "recoveryAction": "check_business_fact",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "IDEMPOTENCY_WINDOW_EXPIRED",
+      "httpStatus": 410,
+      "retryable": false,
+      "recoveryAction": "check_business_fact",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "PAYLOAD_TOO_LARGE",
+      "httpStatus": 413,
+      "retryable": false,
+      "recoveryAction": "shrink_or_use_asset",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "RESULT_TOO_LARGE",
+      "httpStatus": 413,
+      "retryable": false,
+      "recoveryAction": "shrink_or_use_asset",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "QUERY_BUDGET_EXCEEDED",
+      "httpStatus": 422,
+      "retryable": false,
+      "recoveryAction": "narrow_or_async",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "RATE_LIMITED",
+      "httpStatus": 429,
+      "retryable": true,
+      "recoveryAction": "backoff_retry_after",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "CAPACITY_EXCEEDED",
+      "httpStatus": 429,
+      "retryable": true,
+      "recoveryAction": "backoff_retry_after",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "httpStatus": 503,
+      "retryable": true,
+      "recoveryAction": "retry_per_contract",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "REQUEST_DEADLINE_EXCEEDED",
+      "httpStatus": 504,
+      "retryable": false,
+      "recoveryAction": "query_original_execution",
+      "status": "documented",
+      "source": "能力契约 12.2"
+    },
+    {
+      "code": "DEPENDENCY_BLOCKED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "resolve_dependencies",
+      "status": "proposed",
+      "source": "后台治理 13.3：依赖阻塞"
+    },
+    {
+      "code": "PROJECTION_STALE",
+      "httpStatus": 409,
+      "retryable": true,
+      "recoveryAction": "refresh_projection",
+      "status": "proposed",
+      "source": "后台治理 13.3：投影陈旧"
+    },
+    {
+      "code": "PARTIAL_ACTIVATION",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "reconcile",
+      "status": "proposed",
+      "source": "后台治理 13.3：部分激活"
+    },
+    {
+      "code": "RECONCILIATION_REQUIRED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "reconcile",
+      "status": "proposed",
+      "source": "后台治理 13.3：待核对；能力契约 8.3 reconciling"
+    },
+    {
+      "code": "BUDGET_EXCEEDED",
+      "httpStatus": 429,
+      "retryable": false,
+      "recoveryAction": "narrow_or_request_quota",
+      "status": "proposed",
+      "source": "后台治理 13.3：预算不足（非查询场景）"
+    },
+    {
+      "code": "EGRESS_TARGET_NOT_APPROVED",
+      "httpStatus": 403,
+      "retryable": false,
+      "recoveryAction": "stop",
+      "status": "proposed",
+      "source": "集成与消息通道 3.4"
+    },
+    {
+      "code": "CHANNEL_DISABLED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "enable_channel",
+      "status": "proposed",
+      "source": "集成与消息通道 8"
+    }
+  ]
+}

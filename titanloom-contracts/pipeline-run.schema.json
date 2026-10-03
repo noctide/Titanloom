@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/pipeline-run/0.1",
+  "title": "PipelineRun (M0 draft)",
+  "description": "草案骨架。来源：数据处理 15.1（拟定）。不用单一 status 承载运行、质量、发布多个维度；JobRun 成功不等于发布成功。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pipelineRunId",
+    "pipelineVersionRef",
+    "runKind",
+    "runState",
+    "qualityResult",
+    "publishResult",
+    "createdAt"
+  ],
+  "properties": {
+    "pipelineRunId": {
+      "type": "string"
+    },
+    "pipelineVersionRef": {
+      "type": "string"
+    },
+    "runKind": {
+      "enum": [
+        "sample_preview",
+        "dry_run",
+        "full_run"
+      ]
+    },
+    "runState": {
+      "enum": [
+        "accepted",
+        "running",
+        "reconciling",
+        "succeeded",
+        "failed",
+        "canceled",
+        "timed_out"
+      ]
+    },
+    "qualityResult": {
+      "enum": [
+        "not_evaluated",
+        "passed",
+        "warned",
+        "blocked"
+      ]
+    },
+    "publishResult": {
+      "enum": [
+        "not_applicable",
+        "not_published",
+        "published",
+        "rolled_back",
+        "unknown"
+      ]
+    },
+    "jobRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "inputBatchRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "outputDatasetVersionRef": {
+      "type": "string"
+    },
+    "retryOfRunId": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "qualityResult": {
+            "const": "blocked"
+          }
+        },
+        "required": [
+          "qualityResult"
+        ]
+      },
+      "then": {
+        "properties": {
+          "publishResult": {
+            "not": {
+              "const": "published"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "publishResult": {
+            "const": "published"
+          }
+        },
+        "required": [
+          "publishResult"
+        ]
+      },
+      "then": {
+        "properties": {
+          "runState": {
+            "const": "succeeded"
+          },
+          "qualityResult": {
+            "enum": [
+              "passed",
+              "warned"
+            ]
+          }
+        },
+        "required": [
+          "outputDatasetVersionRef"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runKind": {
+            "enum": [
+              "sample_preview",
+              "dry_run"
+            ]
+          }
+        },
+        "required": [
+          "runKind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "publishResult": {
+            "const": "not_applicable"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runState": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "canceled",
+              "timed_out"
+            ]
+          }
+        },
+        "required": [
+          "runState"
+        ]
+      },
+      "then": {
+        "required": [
+          "finishedAt"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runState": {
+            "const": "reconciling"
+          }
+        },
+        "required": [
+          "runState"
+        ]
+      },
+      "then": {
+        "properties": {
+          "publishResult": {
+            "enum": [
+              "unknown",
+              "not_published"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

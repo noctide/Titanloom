@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/confirmation/0.1",
+  "title": "CommandConfirmation (M0 draft)",
+  "description": "草案骨架。来源：能力契约 6.4、13。确认绑定 commandId、摘要、确认人、授权主体与委托、有效期及一次性消费状态；Agent 不能确认自己，普通聊天文字不能直接生成有效确认。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "commandDigest",
+    "commandId",
+    "confirmationId",
+    "confirmedBy",
+    "confirmerType",
+    "consumed",
+    "createdAt",
+    "expiresAt",
+    "impactSummaryDigest",
+    "principalId"
+  ],
+  "properties": {
+    "confirmationId": {
+      "type": "string"
+    },
+    "commandId": {
+      "type": "string"
+    },
+    "confirmedBy": {
+      "type": "string"
+    },
+    "commandDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "impactSummaryDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "consumed": {
+      "type": "boolean"
+    },
+    "consumedByInvocation": {
+      "type": "string"
+    },
+    "confirmerType": {
+      "const": "human",
+      "description": "确认人必须是经验证的人工会话"
+    },
+    "principalId": {
+      "type": "string",
+      "description": "授权主体"
+    },
+    "delegationId": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "consumed": {
+            "const": true
+          }
+        },
+        "required": [
+          "consumed"
+        ]
+      },
+      "then": {
+        "required": [
+          "consumedByInvocation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumed": {
+            "const": false
+          }
+        },
+        "required": [
+          "consumed"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "consumedByInvocation"
+          ]
+        }
+      }
+    }
+  ]
+}

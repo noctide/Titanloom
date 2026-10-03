@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/query-execute-response/0.1",
+  "title": "QueryExecuteResponse (M0 draft)",
+  "description": "来源：能力契约 9.1、9.2，数据处理 15.1。精确十进制与大整数用字符串编码；qualityStatus 只可能是 passed 或 warned（blocked 的数据不会发布）；HTTP 200 不等于指标已认证，客户端须展示声明状态。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "data"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "queryId",
+        "queryVersion",
+        "datasetVersion",
+        "dataAsOf",
+        "qualityStatus",
+        "columns",
+        "rows",
+        "nextCursor",
+        "truncated"
+      ],
+      "properties": {
+        "queryId": {
+          "type": "string"
+        },
+        "queryVersion": {
+          "type": "string"
+        },
+        "datasetVersion": {
+          "type": "string"
+        },
+        "snapshotId": {
+          "type": "string"
+        },
+        "sourceWatermarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "sourceId",
+              "version"
+            ],
+            "properties": {
+              "sourceId": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "dataAsOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "qualityStatus": {
+          "enum": [
+            "passed",
+            "warned"
+          ]
+        },
+        "freshness": {
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "string",
+                  "integer",
+                  "decimal",
+                  "boolean",
+                  "date",
+                  "time",
+                  "timestamp"
+                ]
+              },
+              "scale": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "encoding": {
+                "enum": [
+                  "string"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "decimal"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "scale",
+                    "encoding"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "nextCursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

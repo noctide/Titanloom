@@ -1,0 +1,51 @@
+name: dco
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  signoff:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check Signed-off-by on every new commit
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          ZERO=0000000000000000000000000000000000000000
+          if [ "$EVENT" = "pull_request" ]; then
+            RANGE="$PR_BASE..$PR_HEAD"
+          elif [ -z "$PUSH_BEFORE" ] || [ "$PUSH_BEFORE" = "$ZERO" ]; then
+            RANGE="$PUSH_AFTER"            # 新分支或首次推送：检查该提交可达的全部历史
+          else
+            RANGE="$PUSH_BEFORE..$PUSH_AFTER"
+          fi
+          bad=0
+          for c in $(git rev-list --no-merges "$RANGE"); do
+            name=$(git show -s --format='%an' "$c")
+            email=$(git show -s --format='%ae' "$c")
+            if git show -s --format='%B' "$c" | grep -qiF "Signed-off-by: $name <$email>"; then
+              echo "ok   $c"
+            else
+              echo "FAIL $c 缺少与作者一致的签署行：Signed-off-by: $name <$email>"
+              bad=1
+            fi
+          done
+          if [ "$bad" -ne 0 ]; then
+            echo "请用 git commit -s（或 git commit --amend -s / git rebase --signoff）补签。"
+            exit 1
+          fi

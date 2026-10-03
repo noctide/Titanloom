@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/outbox-event/0.3",
+  "title": "Unified Event Envelope (outbox / DomainEvent) (M0 draft v0.3)",
+  "description": "统一事件信封。字段命名取自后台治理 13.4，语义与总框架 8.3 一致；考勤 15.3 的 resourceId→subject、version→sourceVersion、workspaceRef→scope。事件表达已发生的事实，不是跨域写接口；至少一次投递，消费者幂等；载荷只含受控引用与最小变更信息。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventId",
+    "type",
+    "schemaVersion",
+    "source",
+    "scope",
+    "subject",
+    "sourceVersion",
+    "occurredAt",
+    "recordedAt",
+    "correlationId"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source": {
+      "type": "string",
+      "description": "产生事件的模块"
+    },
+    "scope": {
+      "type": "string",
+      "description": "工作空间或项目范围引用"
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sourceVersion": {
+      "type": "string",
+      "description": "来源资源版本或水位"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recordedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlationId": {
+      "type": "string"
+    },
+    "changeSeq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "服务端变更序号，用于增量同步游标"
+    },
+    "correctionOf": {
+      "type": "string",
+      "description": "被更正事件的 eventId"
+    },
+    "minimalChange": {
+      "type": "object"
+    },
+    "causationId": {
+      "type": "string",
+      "description": "直接引发本事件的上一个事件或命令标识；与 correlationId 一起构成可验证来源链，用于自动化的循环保护（工具自动化 13）"
+    },
+    "originRunRef": {
+      "type": "string",
+      "description": "来源 Run / 步骤引用（可选）"
+    }
+  }
+}

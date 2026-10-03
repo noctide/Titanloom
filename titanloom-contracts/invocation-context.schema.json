@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/invocation-context/0.1",
+  "title": "InvocationContext (M0 draft)",
+  "description": "来源：能力契约 5.2。由服务端认证后构建，调用方自填同名字段不构成授权证据。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "principalId",
+    "invocationType",
+    "workspaceId",
+    "audience",
+    "expiresAt",
+    "policyVersionSet",
+    "requestId",
+    "traceId"
+  ],
+  "properties": {
+    "principalId": {
+      "type": "string"
+    },
+    "executorId": {
+      "type": "string"
+    },
+    "runtimeId": {
+      "type": "string"
+    },
+    "invocationType": {
+      "enum": [
+        "human_session",
+        "agent_runtime",
+        "automation",
+        "cli",
+        "service"
+      ]
+    },
+    "delegationId": {
+      "type": "string"
+    },
+    "delegationVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "effectiveProjectScope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "audience": {
+      "type": "string"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "agentTaskId": {
+      "type": "string"
+    },
+    "parentInvocationId": {
+      "type": "string"
+    },
+    "modelBoundaryRef": {
+      "type": "string"
+    },
+    "policyVersionSet": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "traceId": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "invocationType": {
+            "const": "agent_runtime"
+          }
+        },
+        "required": [
+          "invocationType"
+        ]
+      },
+      "then": {
+        "required": [
+          "executorId",
+          "runtimeId",
+          "delegationId",
+          "delegationVersion"
+        ]
+      },
+      "description": "Agent 调用必须有已注册运行端与有效委托"
+    }
+  ]
+}

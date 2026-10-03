@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/command/0.1",
+  "title": "CapabilityCommand (M0 draft)",
+  "description": "草案骨架。来源：能力契约 6.1、6.5、7.1、14.2，总框架 8.3。命令表达意图，不等于领域事件。所有创建命令必须带 Idempotency-Key（首期采用客户端生成的 UUIDv7）；clientRequestId 只用于关联，不能代替幂等键。",
+  "type": "object",
+  "required": [
+    "commandId",
+    "capabilityId",
+    "contractVersion",
+    "state",
+    "principalId",
+    "workspaceId",
+    "idempotencyKey",
+    "requestDigest",
+    "createdAt",
+    "expiresAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "commandId": {
+      "type": "string",
+      "pattern": "^cmd_[A-Za-z0-9_-]+$"
+    },
+    "capabilityId": {
+      "type": "string"
+    },
+    "contractVersion": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "prepared",
+        "awaiting_confirmation",
+        "ready",
+        "accepted",
+        "canceled",
+        "expired"
+      ]
+    },
+    "executorRef": {
+      "type": "string"
+    },
+    "delegationRef": {
+      "type": "string"
+    },
+    "targetResourceRef": {
+      "type": "string"
+    },
+    "expectedResourceVersion": {
+      "type": "string",
+      "not": {
+        "const": "latest"
+      },
+      "description": "可变目标的并发校验；不得为 latest（规范 6.3）"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "description": "UUIDv7；首次未命中时仅接受时间戳在过去 24 小时至未来 5 分钟内的键（规范 14.2，由服务端校验）"
+    },
+    "inputRef": {
+      "type": "string",
+      "description": "恢复所需的受控输入引用；摘要不能替代它"
+    },
+    "impactSummaryDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "confirmationRef": {
+      "type": "string"
+    },
+    "invocationRef": {
+      "type": "string",
+      "description": "仅 accepted 状态可有；一个 commandId 至多一个正式调用"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "principalId": {
+      "type": "string",
+      "description": "服务端验证的授权主体，不信任客户端自报"
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "delegationId": {
+      "type": "string"
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string",
+          "not": {
+            "const": "latest"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "clientRequestId": {
+      "type": "string"
+    },
+    "agentTaskId": {
+      "type": "string"
+    },
+    "requestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "调用者提交的业务请求按固定规则规范化后的摘要，用于识别重复"
+    },
+    "commandDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "含服务端首次解析并固定的目标、默认值与输入版本，用于确认和执行；准备完成后写入"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "accepted"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "invocationRef",
+          "commandDigest"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "not": {
+              "const": "accepted"
+            }
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "invocationRef"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "awaiting_confirmation",
+              "ready"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "commandDigest"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "awaiting_confirmation"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "impactSummaryDigest"
+        ]
+      }
+    }
+  ]
+}

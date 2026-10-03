@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/delegation/0.1",
+  "title": "Delegation (M0 draft)",
+  "description": "来源：能力契约 13（delegations）、5.3。委托只收窄权限，不扩大。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "delegationId",
+    "version",
+    "principalId",
+    "executorId",
+    "purpose",
+    "scope",
+    "validFrom",
+    "validUntil",
+    "revocable",
+    "state"
+  ],
+  "properties": {
+    "delegationId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "principalId": {
+      "type": "string"
+    },
+    "executorId": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "capabilities",
+        "resources"
+      ],
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "resources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "budget": {
+      "type": "object"
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revocable": {
+      "const": true
+    },
+    "state": {
+      "enum": [
+        "active",
+        "revoked",
+        "expired"
+      ]
+    }
+  }
+}

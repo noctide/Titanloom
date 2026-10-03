@@ -1,0 +1,72 @@
+{
+  "capabilityId": "titanloom.data.pipeline.run",
+  "contractVersion": "1.0.0",
+  "ownerModule": "data",
+  "ownerTeamRef": "platform-data",
+  "titleKey": "capability.data.pipeline.run.title",
+  "descriptionKey": "capability.data.pipeline.run.description",
+  "publicationState": "active",
+  "operationKind": "business_write",
+  "impactLevel": "medium",
+  "effectModel": "staged_publish",
+  "inputSchema": {
+    "ref": "schema:titanloom.data.pipeline.run.input:1.0.0",
+    "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "outputSchema": {
+    "ref": "schema:titanloom.data.pipeline.run.output:1.0.0",
+    "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "resourceRequirements": {
+    "targetTypes": [
+      "Pipeline"
+    ],
+    "dependencyResolver": "data.pipeline.authorization.v1"
+  },
+  "preconditions": [
+    "published_version_exists",
+    "input_scope_authorized"
+  ],
+  "authorization": {
+    "action": "titanloom.data.pipeline.run",
+    "agentPolicies": [
+      "deny",
+      "confirm",
+      "allow"
+    ],
+    "delegationRequiredForAgent": true
+  },
+  "execution": {
+    "mode": "async",
+    "budgetClass": "data.batch",
+    "cancellation": "cooperative_and_process_termination",
+    "retryPolicy": "registered_node_policy"
+  },
+  "idempotency": {
+    "required": true,
+    "retentionProfile": "command.standard"
+  },
+  "confirmation": {
+    "supportsPreview": true
+  },
+  "resultVerification": {
+    "validatorRef": "data.pipeline.run.verify.v1",
+    "evidence": [
+      "pipelineRunId",
+      "inputVersions",
+      "outputRefs",
+      "qualityStatus"
+    ]
+  },
+  "modelDelivery": {
+    "defaultProjection": "status_and_approved_summary"
+  },
+  "bindings": {
+    "http": "command_protocol",
+    "cli": "pipelines run"
+  },
+  "implementationRef": "builtin:data.pipeline.run:1.0.0",
+  "compatibility": {
+    "hostContract": "1.x"
+  }
+}

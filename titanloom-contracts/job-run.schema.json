@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/job-run/0.1",
+  "title": "JobRun (M0 draft)",
+  "description": "草案骨架。来源：能力契约 8.1、8.2、8.3、8.4。JobRun 是一次后台逻辑任务；Worker、租约和 fencing token 绑定在 JobAttempt。入队次数与执行尝试次数分开记录。succeeded 不等于领域成功。",
+  "type": "object",
+  "required": [
+    "attemptCount",
+    "authorizationContextRef",
+    "commandId",
+    "createdAt",
+    "effectStatus",
+    "enqueueCount",
+    "implementationVersion",
+    "inputRefs",
+    "invocationId",
+    "jobId",
+    "jobType",
+    "ownerModule",
+    "state",
+    "stateVersion"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "jobId": {
+      "type": "string"
+    },
+    "invocationId": {
+      "type": "string"
+    },
+    "commandId": {
+      "type": "string"
+    },
+    "jobType": {
+      "type": "string"
+    },
+    "ownerModule": {
+      "type": "string"
+    },
+    "domainRunRef": {
+      "type": "string",
+      "description": "指向领域运行（PipelineRun 等），领域状态不在此复制"
+    },
+    "retryOfJobId": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "queued",
+        "running",
+        "retry_wait",
+        "cancel_requested",
+        "reconciling",
+        "succeeded",
+        "failed",
+        "canceled",
+        "timed_out"
+      ]
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "CAS 版本"
+    },
+    "progress": {
+      "type": "object",
+      "properties": {
+        "completedUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalUnits": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "unit": {
+          "type": "string"
+        },
+        "percent": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": false
+    },
+    "attemptCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "执行尝试次数"
+    },
+    "inputRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementationVersion": {
+      "type": "string"
+    },
+    "authorizationContextRef": {
+      "type": "string"
+    },
+    "budgetSnapshot": {
+      "type": "object"
+    },
+    "queueDeadlineAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "runDeadlineAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outputRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "effectStatus": {
+      "enum": [
+        "none",
+        "committed",
+        "partial",
+        "unknown"
+      ]
+    },
+    "manualReviewRequired": {
+      "type": "boolean"
+    },
+    "error": {
+      "$ref": "error.schema.json#/$defs/errorBody"
+    },
+    "enqueueCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "入队/重投次数；outbox 重发、Broker 重投不创建新任务"
+    },
+    "currentAttemptRef": {
+      "type": "string",
+      "description": "当前领取与执行的 JobAttempt；Worker、租约与 fencing token 属于 JobAttempt（规范 8.1、8.4）"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "canceled",
+              "timed_out"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "finishedAt"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "succeeded"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "effectStatus": {
+            "enum": [
+              "none",
+              "committed"
+            ]
+          }
+        },
+        "description": "succeeded 不得同时 effectStatus=unknown/partial"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "effectStatus": {
+            "const": "unknown"
+          }
+        },
+        "required": [
+          "effectStatus"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "enum": [
+              "reconciling",
+              "queued",
+              "running",
+              "retry_wait",
+              "cancel_requested",
+              "failed"
+            ]
+          }
+        },
+        "description": "unknown 副作用不得进入 canceled / timed_out / succeeded（规范 8.3），先 reconciling"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "running",
+              "cancel_requested"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "currentAttemptRef"
+        ]
+      }
+    }
+  ]
+}

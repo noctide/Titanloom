@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/inbound-receipt/0.1",
+  "title": "InboundReceipt (M0 draft)",
+  "description": "来源：集成与消息通道子方案 4.2。先持久化再确认；确认不等于处理成功。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receiptId",
+    "endpointId",
+    "endpointRevision",
+    "deliveryId",
+    "receivedAt",
+    "payloadDigest",
+    "state"
+  ],
+  "properties": {
+    "receiptId": {
+      "type": "string"
+    },
+    "endpointId": {
+      "type": "string"
+    },
+    "endpointRevision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "deliveryId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receivedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payloadDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "payloadRef": {
+      "type": "string"
+    },
+    "originMarker": {
+      "type": "string"
+    },
+    "hopCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "state": {
+      "enum": [
+        "accepted",
+        "duplicate",
+        "rejected",
+        "delivered_to_target",
+        "target_failed"
+      ]
+    },
+    "rejectReason": {
+      "enum": [
+        "bad_signature",
+        "stale_timestamp",
+        "replay",
+        "schema_invalid",
+        "too_large",
+        "rate_limited",
+        "loop_detected",
+        "endpoint_disabled"
+      ]
+    },
+    "targetRef": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "rejected"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "rejectReason"
+        ]
+      }
+    }
+  ]
+}

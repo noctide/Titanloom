@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/job-state-notification/0.1",
+  "title": "JobStateNotification (M0 draft)",
+  "description": "来源：能力契约 8.6。推送只通知 jobId 与 stateVersion 变化，客户端收到后按需查权威状态；不携带业务数据，推送丢失不丢业务事实。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "jobId",
+    "stateVersion"
+  ],
+  "properties": {
+    "jobId": {
+      "type": "string"
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/invocation/0.1",
+  "title": "CapabilityInvocation (M0 draft)",
+  "description": "来源：能力契约 7.2、13。一个 commandId 至多一个正式调用；接收事实与执行结果分开。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "invocationId",
+    "commandId",
+    "capabilityId",
+    "contractVersion",
+    "contextRef",
+    "acceptedAt",
+    "receiptKind"
+  ],
+  "properties": {
+    "invocationId": {
+      "type": "string"
+    },
+    "commandId": {
+      "type": "string"
+    },
+    "capabilityId": {
+      "type": "string"
+    },
+    "contractVersion": {
+      "type": "string"
+    },
+    "contextRef": {
+      "type": "string"
+    },
+    "acceptedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "receiptKind": {
+      "enum": [
+        "sync_result",
+        "async_receipt"
+      ]
+    },
+    "jobRef": {
+      "type": "string"
+    },
+    "domainRunRef": {
+      "type": "string"
+    },
+    "resultRef": {
+      "type": "string"
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "pending",
+            "verified",
+            "failed",
+            "unavailable"
+          ]
+        },
+        "validatorVersion": {
+          "type": "string"
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "inputVersions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outputRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domainRunRef": {
+          "type": "string"
+        },
+        "observedOutcome": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "verified"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "required": [
+              "validatorVersion",
+              "verifiedAt",
+              "domainRunRef"
+            ]
+          }
+        }
+      ],
+      "description": "来源：能力契约 8.7。验证器暂不可用时保持待验证（pending / unavailable），不得由模型通过日志文字认定成功"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "receiptKind": {
+            "const": "async_receipt"
+          }
+        },
+        "required": [
+          "receiptKind"
+        ]
+      },
+      "then": {
+        "required": [
+          "jobRef"
+        ]
+      }
+    }
+  ]
+}

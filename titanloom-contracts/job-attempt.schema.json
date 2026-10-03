@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/job-attempt/0.1",
+  "title": "JobAttempt (M0 draft)",
+  "description": "来源：能力契约 8.1、8.4。一次具体领取与执行，绑定 Worker、租约和 fencing token；每次领取 fencing token 单调递增，旧 Worker 丢失租约后其状态更新与平台内部提交必须被拒绝。外部系统不支持 fencing 时靠业务幂等键与对账。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "attemptId",
+    "jobId",
+    "attemptNo",
+    "workerId",
+    "fencingToken",
+    "leaseExpiresAt",
+    "startedAt",
+    "outcome",
+    "effectStatus"
+  ],
+  "properties": {
+    "attemptId": {
+      "type": "string"
+    },
+    "jobId": {
+      "type": "string"
+    },
+    "attemptNo": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "workerId": {
+      "type": "string"
+    },
+    "fencingToken": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "leaseExpiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "heartbeatAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outcome": {
+      "enum": [
+        "running",
+        "succeeded",
+        "failed",
+        "canceled",
+        "timed_out",
+        "lease_lost"
+      ]
+    },
+    "checkpointRef": {
+      "type": "string"
+    },
+    "effectStatus": {
+      "enum": [
+        "none",
+        "committed",
+        "partial",
+        "unknown"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "running"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "finishedAt"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "canceled",
+              "timed_out",
+              "lease_lost"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "required": [
+          "finishedAt"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "succeeded"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "effectStatus": {
+            "enum": [
+              "none",
+              "committed"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

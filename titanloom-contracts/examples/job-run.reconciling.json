@@ -1,0 +1,26 @@
+{
+  "jobId": "job_001",
+  "invocationId": "inv_001",
+  "commandId": "cmd_001",
+  "jobType": "pipeline.node",
+  "ownerModule": "data-processing",
+  "domainRunRef": "pipelinerun:pr_77",
+  "state": "reconciling",
+  "stateVersion": 4,
+  "progress": {
+    "completedUnits": 3,
+    "totalUnits": null,
+    "unit": "node",
+    "percent": null
+  },
+  "attemptCount": 2,
+  "inputRefs": [
+    "dataset:ds_1@v7"
+  ],
+  "implementationVersion": "builtin.sql@1.0.0",
+  "authorizationContextRef": "authctx_9",
+  "createdAt": "2026-10-01T09:00:01Z",
+  "effectStatus": "unknown",
+  "manualReviewRequired": false,
+  "enqueueCount": 2
+}

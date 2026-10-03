@@ -1,0 +1,14 @@
+{
+  "commandId": "cmd_001",
+  "capabilityId": "titanloom.data.pipeline.run",
+  "contractVersion": "1.0.0",
+  "state": "accepted",
+  "idempotencyKey": "0192f3b4-7c1a-7d2e-8a5b-3c4d5e6f7a8b",
+  "invocationRef": "inv_001",
+  "createdAt": "2026-10-01T09:00:00Z",
+  "expiresAt": "2026-10-01T09:30:00Z",
+  "principalId": "u_100",
+  "workspaceId": "ws_ops",
+  "requestDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "commandDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+}
