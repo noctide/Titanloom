@@ -640,7 +640,7 @@ Dataset/Query、来源批次和执行版本。若指标受外部/上级固定公
 
 **FieldRef（字段标识）**。FieldRef 是数据处理登记的稳定字段身份，ID 形如 `fld_department`，记录语言资源键、数据类型、单位、时间字段的粒度与业务时区、取值字典或选项 Query、是否为权限维度、所属业务域与责任人、版本与状态（draft / active / deprecated）。FieldRef 只回答"这是哪个业务字段"，不承载口径；口径、层级与生效规则仍由 12.5 的 Metric / Dimension 表达，Dimension 可引用 FieldRef。已被 Query 声明引用的 FieldRef 不可删除，只能标记 deprecated 并给出替代项。
 
-**字段映射**。Dataset 字段经字段映射绑定到 FieldRef，一个字段至多绑定一个 FieldRef。不同 Dataset 中含义相同而列名不同的字段（同义列）由责任人显式绑定到同一 FieldRef；平台不按列名或别名自动归并（与 12.5"同名不自动等同"一致），只可提示候选。绑定要求数据类型兼容；时间字段粒度不同时登记换算关系。字段映射随 DatasetVersion 版本化，修改映射生成新版本，并按第 11 节展示受影响的 Query、看板与报表。字段映射同时是第 11 节字段级血缘的输入。
+**字段映射**。Dataset 字段经字段映射绑定到 FieldRef，一个字段至多绑定一个 FieldRef。不同 Dataset 中含义相同而列名不同的字段（同义列）由责任人显式绑定到同一 FieldRef；平台不按列名或别名自动归并（与 12.5"同名不自动等同"一致），只可提示候选。**此条已确认（2026-10-03）**：同义列必须由责任人手动绑定。绑定要求数据类型兼容；时间字段粒度不同时登记换算关系。字段映射随 DatasetVersion 版本化，修改映射生成新版本，并按第 11 节展示受影响的 Query、看板与报表。字段映射同时是第 11 节字段级血缘的输入。
 
 **可筛选声明（filterable）**。Query 契约按 FieldRef 声明可接受的筛选：FieldRef、对应参数槽位、允许的操作（等于、多值、区间、相对日期、文本搜索、层级）、Query 粒度（grain）、是否必填、多值上限，以及可选的选项来源（选项 Query 或字典）。基于 Dataset 语义层生成的 Query 由平台推导声明；手写 SQL 的 Query 须显式声明参数槽位及其在 SQL 中的绑定位置，平台不改写 SQL。一个 Query 只声明一次，被多少组件复用都不重复配置。执行规则：
 
@@ -650,7 +650,7 @@ Dataset/Query、来源批次和执行版本。若指标受外部/上级固定公
 -   筛选粒度与 Query 粒度不同时按登记的换算关系处理；无法换算时拒绝并说明原因。
 -   筛选值规范化（多值排序、去重）后进入查询缓存键。
 
-**数据代次（dataGeneration）**。每个 Dataset 维护单调递增的数据代次，消费者可见数据变化时加一：原子发布新 DatasetVersion、版本回退（指针回到旧版本时代次仍递增，不复用旧值）、准实时 Dataset 的增量批次提交、更正批次发布。权限变化不改变代次，由授权失效机制处理；被质量规则阻断而未发布的批次不改变代次。代次变化与版本指针切换在同一事务内写入 outbox 事件 `data.dataset.generation_changed`，载荷含 datasetId、新代次、datasetVersion、变化类型（publish / rollback / incremental / correction）、dataAsOf、来源水位摘要与质量结论，不含数据行。事件按至少一次投递，消费者按代次去重并丢弃旧代次。Query 响应返回所读数据的 dataGeneration，供调用方判断结果是否已过期；snapshot 模式返回快照固定时的代次。
+**数据代次（dataGeneration）**。每个 Dataset 维护单调递增的数据代次，消费者可见数据变化时加一：原子发布新 DatasetVersion、版本回退（指针回到旧版本时代次仍递增，不复用旧值；**此条已确认，2026-10-03**）、准实时 Dataset 的增量批次提交、更正批次发布。权限变化不改变代次，由授权失效机制处理；被质量规则阻断而未发布的批次不改变代次。代次变化与版本指针切换在同一事务内写入 outbox 事件 `data.dataset.generation_changed`，载荷含 datasetId、新代次、datasetVersion、变化类型（publish / rollback / incremental / correction）、dataAsOf、来源水位摘要与质量结论，不含数据行。事件按至少一次投递，消费者按代次去重并丢弃旧代次。Query 响应返回所读数据的 dataGeneration，供调用方判断结果是否已过期；snapshot 模式返回快照固定时的代次。
 
 代次事件是数据变化的通知，不是数据本身：可视化收到后仍经 Query 重新获取（可视化 8.3），生成式报表据此决定是否生成新实例（可视化 16.2）。报表生成完成事件属于数据可视化领域，由其发布，不由本模块发布。
 

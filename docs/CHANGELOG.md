@@ -10,6 +10,7 @@
 -   **能力契约 9.1**：Query 请求新增按 FieldRef 的 `filters`（eq / in / range 左闭右开 / relative 由服务端解析 / search / hierarchy；未声明的筛选返回参数错误），响应新增 `dataGeneration` 与列 `fieldRef`。
 -   **数据可视化**：8.2、8.3 改为引用数据处理 12.6；16.2 报表生成完成事件命名为 `visualization.report.generated`，经 Notification 与集成通道 DeliveryRoute 外发，受通道最高数据级别限制。
 -   **集成与消息通道 3.1**：明确领域事件须经 Notification 形成通知类别后才可路由。
+-   **已确认的两项**：同义列必须由责任人手动绑定，不按列名自动归并；版本回退时数据代次继续递增，不复用旧值。
 -   **契约**：新增 field-ref、query-filterable、dataset-generation-changed 三个 Schema，Query 请求与响应 Schema 升至 0.2；新增第六部分测试 34 项，契约测试共 193 项。
 
 ### 2026-10-03｜设计基线 V1.0-rc1（首个公开版本）
