@@ -4,21 +4,49 @@
   "title": "ErrorResponse (M0 draft)",
   "description": "草案骨架。来源：能力契约 12.1。details 按错误码另定 Schema，只含当前主体有权看到的信息；不得返回栈、SQL、路径、凭据。",
   "type": "object",
-  "required": ["requestId","error"],
+  "required": [
+    "requestId",
+    "error"
+  ],
   "additionalProperties": false,
-  "properties": {"requestId":{"type":"string"},"error":{"$ref":"#/$defs/errorBody"}},
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "error": {
+      "$ref": "#/$defs/errorBody"
+    }
+  },
   "$defs": {
     "errorBody": {
-      "type":"object",
-      "required":["code","messageKey","retryable"],
+      "type": "object",
+      "required": [
+        "code",
+        "messageKey",
+        "retryable"
+      ],
       "additionalProperties": false,
       "properties": {
-        "code":{"type":"string","pattern":"^[A-Z][A-Z0-9_]*$"},
-        "messageKey":{"type":"string","pattern":"^error\\.[A-Za-z0-9_.]+$"},
-        "messageParams":{"type":"object"},
-        "retryable":{"type":"boolean"},
-        "recoveryAction":{"type":"string"},
-        "details":{"type":"object"}
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "messageKey": {
+          "type": "string",
+          "pattern": "^errors:[a-z][A-Za-z0-9]*$"
+        },
+        "messageParams": {
+          "type": "object"
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "recoveryAction": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object"
+        }
       }
     }
   }

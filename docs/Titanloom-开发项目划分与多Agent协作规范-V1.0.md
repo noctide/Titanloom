@@ -67,13 +67,13 @@ flowchart TB
 | 项目 | 负责的方案 | 拥有的对象与职责（摘要） | 服务端目录 | 前端目录 | 主要里程碑 |
 | --- | --- | --- | --- | --- | --- |
 | ops 工程基础 | 实施路线 5.3、工程质量规范、部署拓扑 | 仓库骨架、工具链、CI 与门禁、合成数据生成器、性能脚手架、部署与恢复脚本、本文清单文件 | `ops/`、`.github/`、根配置 | 前端工具链配置 | M0；M4 基准与恢复 |
-| contracts 契约 | 能力契约 3、12 与各方案中的契约 | JSON Schema、OpenAPI、状态机、错误码注册表、事件信封、SDK 生成 | `packages/contracts`、`packages/sdk-*` | — | M0 起持续 |
+| contracts 契约 | 能力契约 3、12 与各方案中的契约 | JSON Schema、OpenAPI、状态机、错误码注册表及其 `errors` 文案键、事件信封、SDK 生成 | `packages/contracts`、`packages/sdk-*` | — | M0 起持续 |
 | access 身份与授权 | 能力契约 5；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 | Principal / Group / ServicePrincipal、Person / Employment / SourceIdentity、Workspace / BusinessProject、角色与绑定、策略版本、委托、Agent 运行端、三道门与授权判定 | `apps/api/titanloom/access` | — | M1 |
 | execution 命令与执行 | 能力契约 3、6、7、8、13、14；总框架 12.4、13 | 能力目录、命令、确认、调用、幂等记录、outbox、JobRun / JobAttempt、有界本地 Runner、控制服务（调度、分派、租约与核对） | `apps/api/titanloom/execution` | — | M1 |
-| facilities 资产·审计·通知 | 总框架 8.7、9；能力契约 9.4；后台治理 11.1、11.3、12.2 | Asset 服务（稳定 ID、版本、派生规格、访问授权）、AuditEvent、Notification 与待办投递、服务端语言模板 | `apps/api/titanloom/facilities` | — | M1；通知 M4 |
+| facilities 资产·审计·通知 | 总框架 8.7、9；能力契约 9.4；后台治理 11.1、11.3、12.2；国际化规范 | Asset 服务（稳定 ID、版本、派生规格、访问授权）、AuditEvent、Notification 与待办投递、语言资源服务（文案、语言包、术语表、默认文案导入、服务端渲染适配层） | `apps/api/titanloom/facilities` | — | M1；通知 M4 |
 | plugin-host 插件宿主 | 插件与扩展体系；总框架 8.6 | 清单与签名校验、Contribution / Binding / Host、服务契约与组合版本、运行实例生命周期、宿主 SDK；隔离宿主（G-ISO） | `apps/api/titanloom/plugin_host`、`packages/host-sdk` | — | M1 阶段 A；M2–M3 B1；M6 B2、C |
-| shell 门户与工作台 | Shell 与门户及个人工作台 | 导航、资源路由、ShellContext、WorkspacePage / Version、待办与搜索入口、启动体验；前端应用框架与公共 UI 组件 | `apps/api/titanloom/shell` | `apps/web/src/shell`、`apps/web/src/shared` | M1 A1；M4 A2；M6 B–C |
-| admin 后台治理 | 后台治理中心 | 治理投影、配置修订与激活、配额与预留、依赖图与运行图、权限诊断、平台告警、备份恢复入口、集成中心页面承载 | `apps/api/titanloom/admin` | `apps/web/src/domains/admin` | M0 P0；M1 P1；M4 P2–P3 |
+| shell 门户与工作台 | Shell 与门户及个人工作台 | 导航、资源路由、ShellContext、WorkspacePage / Version、待办与搜索入口、启动体验；前端应用框架与公共 UI 组件；`common` 命名空间文案 | `apps/api/titanloom/shell` | `apps/web/src/shell`、`apps/web/src/shared` | M1 A1；M4 A2；M6 B–C |
+| admin 后台治理 | 后台治理中心 | 治理投影、配置修订与激活、配额与预留、依赖图与运行图、权限诊断、平台告警、备份恢复入口、集成中心页面承载、语言与术语页 | `apps/api/titanloom/admin` | `apps/web/src/domains/admin` | M0 P0；M1 P1；M4 P2–P3 |
 | integration 集成与消息通道 | 集成与消息通道 | ChannelConnection、DeliveryRoute、模板、投递记录、InboundEndpoint / InboundRoute、出网守卫、SecretRef 最小集 | `apps/api/titanloom/integration` | `apps/web/src/domains/integration` | M4 出站；M5 入站 |
 | forms 填报与流程 | 填报与流程 | RecordType、BusinessRecord / RecordRevision、导入、WorkflowInstance / HumanTask、L0 表单运行 | `apps/api/titanloom/forms` | `apps/web/src/domains/forms` | M2；M5 阶段二 |
 | attendance 考勤 | 考勤签到 | 班次与排班、签到证据、申报与修订、额度、正式结果、AttendanceAlert、导出适配 | `apps/api/titanloom/attendance` | `apps/web/src/domains/attendance` | M2；M5 阶段二 |
@@ -83,7 +83,7 @@ flowchart TB
 | knowledge 知识与文档 | 知识与文档平台 | KnowledgeSpace、Document / Block、KnowledgeVersion、关系、Issue / Suggestion | `apps/api/titanloom/knowledge` | `apps/web/src/domains/knowledge` | M5 A–B；M6 C |
 | agent 智能管家 | 智能管家 | AgentTask、Goal / PlanVersion / AgentStep、上下文与恢复点、Model Adapter 契约 | `apps/api/titanloom/agent` | `apps/web/src/domains/agent` | M5；M6 |
 
-每个项目还拥有自己目录下的数据库迁移（`<服务端目录>/migrations`）与测试（`<服务端目录>/tests`、前端目录下的测试）。跨项目的端到端测试放在 `tests/e2e`，由 ops 项目维护，用例来自各方案的验收章节。
+每个项目还拥有仓库根目录 `i18n/` 中与本项目命名空间同名的键清单文件（国际化规范 5.2），以及自己目录下的数据库迁移（`<服务端目录>/migrations`）与测试（`<服务端目录>/tests`、前端目录下的测试）。跨项目的端到端测试放在 `tests/e2e`，由 ops 项目维护，用例来自各方案的验收章节。
 
 ## 3. 里程碑中的并行安排
 
@@ -104,6 +104,7 @@ flowchart TB
 ### 4.1 所有项目共同必读
 
 -   《Titanloom-工程质量与代码规范》全文。
+-   《Titanloom-国际化与本地化规范》第 1–5、7–9 节（facilities 与 admin 读全文）。
 -   本文第 1、2.2、5、6 节。
 -   总框架第 4、5 节（领域边界与总体关系）。
 -   能力契约第 2、3、12 节（结构、能力契约、错误语义）。
@@ -220,48 +221,48 @@ ops:
   paths: [ops/, .github/, tests/e2e/, pyproject.toml, package.json, pnpm-workspace.yaml, uv.lock, pnpm-lock.yaml]
   read: [实施路线, 部署拓扑与容量规划, 总框架#12, 开源与第三方依赖治理]
 contracts:
-  paths: [packages/contracts/, packages/sdk-python/, packages/sdk-typescript/]
+  paths: [packages/contracts/, packages/sdk-python/, packages/sdk-typescript/, i18n/errors.yaml]
   read: [平台能力契约与Agent接入规范, 总框架#8.2, 总框架#8.3, 总框架#13.1]
 access:
-  paths: [apps/api/titanloom/access/]
+  paths: [apps/api/titanloom/access/, i18n/access.yaml]
   read: [平台能力契约#5, 平台能力契约#6.4, 总框架#3.1, 总框架#3.1.1, 总框架#8.5, 后台治理#4, 后台治理#5.1]
 execution:
-  paths: [apps/api/titanloom/execution/]
+  paths: [apps/api/titanloom/execution/, i18n/execution.yaml]
   read: [平台能力契约#6, 平台能力契约#7, 平台能力契约#8, 平台能力契约#13, 平台能力契约#14, 总框架#12.4, 总框架#13, 部署拓扑#4]
 facilities:
-  paths: [apps/api/titanloom/facilities/]
+  paths: [apps/api/titanloom/facilities/, i18n/facilities.yaml, i18n/glossary.yaml]
   read: [平台能力契约#9.4, 总框架#8.7, 总框架#9, 后台治理#11.1, 后台治理#11.3, 后台治理#12.2]
 plugin-host:
-  paths: [apps/api/titanloom/plugin_host/, packages/host-sdk/]
+  paths: [apps/api/titanloom/plugin_host/, packages/host-sdk/, i18n/plugins.yaml]
   read: [插件与扩展体系, 总框架#8.6, ADR-013, ADR-016]
 shell:
-  paths: [apps/api/titanloom/shell/, apps/web/src/shell/, apps/web/src/shared/]
+  paths: [apps/api/titanloom/shell/, apps/web/src/shell/, apps/web/src/shared/, i18n/common.yaml, i18n/shell.yaml]
   read: [Shell与门户及个人工作台, 总框架#3, 总框架#8.7]
 admin:
-  paths: [apps/api/titanloom/admin/, apps/web/src/domains/admin/]
+  paths: [apps/api/titanloom/admin/, apps/web/src/domains/admin/, i18n/admin.yaml]
   read: [后台治理中心, 平台能力契约#5, 平台能力契约#8, 集成与消息通道#5]
 integration:
-  paths: [apps/api/titanloom/integration/, apps/web/src/domains/integration/]
+  paths: [apps/api/titanloom/integration/, apps/web/src/domains/integration/, i18n/integration.yaml]
   read: [集成与消息通道, 后台治理#7.2, 后台治理#10.3, 平台能力契约#6]
 forms:
-  paths: [apps/api/titanloom/forms/, apps/web/src/domains/forms/]
+  paths: [apps/api/titanloom/forms/, apps/web/src/domains/forms/, i18n/forms.yaml]
   read: [填报与流程, 平台能力契约#6, 平台能力契约#7, 插件与扩展体系#2]
 attendance:
-  paths: [apps/api/titanloom/attendance/, apps/web/src/domains/attendance/]
+  paths: [apps/api/titanloom/attendance/, apps/web/src/domains/attendance/, i18n/attendance.yaml]
   read: [考勤签到, 平台能力契约#6, 平台能力契约#7, 平台能力契约#8, 总框架#8.7]
 dataproc:
-  paths: [apps/api/titanloom/dataproc/, apps/web/src/domains/dataproc/]
+  paths: [apps/api/titanloom/dataproc/, apps/web/src/domains/dataproc/, i18n/dataproc.yaml]
   read: [数据处理, 平台能力契约#8, 平台能力契约#9, 插件与扩展体系#2, 插件与扩展体系#8, ADR-016]
 visualization:
-  paths: [apps/api/titanloom/visualization/, apps/web/src/domains/visualization/, apps/player/]
+  paths: [apps/api/titanloom/visualization/, apps/web/src/domains/visualization/, apps/player/, i18n/visualization.yaml]
   read: [数据可视化控制台, 平台能力契约#9, 数据处理#12, Shell与门户及个人工作台#7]
 automation:
-  paths: [apps/api/titanloom/automation/, apps/web/src/domains/automation/]
+  paths: [apps/api/titanloom/automation/, apps/web/src/domains/automation/, i18n/automation.yaml]
   read: [工具自动化, 平台能力契约#6, 平台能力契约#7, 平台能力契约#8, 集成与消息通道#4, ADR-016]
 knowledge:
-  paths: [apps/api/titanloom/knowledge/, apps/web/src/domains/knowledge/]
+  paths: [apps/api/titanloom/knowledge/, apps/web/src/domains/knowledge/, i18n/knowledge.yaml]
   read: [知识与文档, 平台能力契约#9.4, 总框架#9]
 agent:
-  paths: [apps/api/titanloom/agent/, apps/web/src/domains/agent/]
+  paths: [apps/api/titanloom/agent/, apps/web/src/domains/agent/, i18n/agent.yaml]
   read: [智能管家, 平台能力契约#4, 平台能力契约#5, 平台能力契约#6, 平台能力契约#9.3, 平台能力契约#10, 平台能力契约#11]
 ```

@@ -4,6 +4,7 @@
 > 修订（2026-10-01）：平台运行告警改由公共监控告警设施管理，业务异常保留本域语义（11.2，与总框架一致）；去除对旧版总框架的引用；个人 Python 节点等用户代码执行须待隔离宿主门禁 G-ISO 通过（19）；大数据表格选型改指总框架 12.3.1 与 ADR-005（0）。
 > 修订（2026-10-02）：新增 15.1 PipelineRun 领域状态（runKind、runState、qualityResult、publishResult 四个维度与不变量），并说明与 Query `qualityStatus` 的对应关系；清理 3 处旧编号引用。
 > 修订（2026-10-03，通读 2–5、7、9、11、13–14、16–18）：8.1、8.4、19 与第 0 节 DDP-005/006 的个人 SQL / Python 节点和个人插件改为以 G-ISO 通过为前提（与 ADR-016 一致，此前 19 节只限制了 Python）；3.1 更正为"总框架第 8.5 节"；4 节对象表补 FieldRef；13.3 本地恢复副本加终端政策前提；17 缓存键加数据代次；18.1 新增场景 19、20 并注明 14、16 待 G-ISO 后验收。
+> 修订（2026-10-03）：12.6 FieldRef 显示名称改为 LocalizedText（国际化规范 7）。
 > 修订（2026-10-03）：新增 12.6 字段标识（FieldRef）、可筛选声明与数据代次（拟定），为可视化 8.2、8.3、16.2 提供数据侧接口；12.1 增加指向。
 > 领域定位：Titanloom 正式业务能力域之一；历史规划编号 05
 > 仅作为早期文档组织痕迹，不作为导航、依赖或所有权依据。
@@ -639,7 +640,7 @@ Dataset/Query、来源批次和执行版本。若指标受外部/上级固定公
 
 本节为数据可视化子方案 8.2（筛选器与字段绑定）、8.3（报表模板与数据绑定）与 16.2（生成式 HTML 报表）提供数据侧接口。对象与字段为拟定，待工程 Schema 确认；草案见 titanloom-contracts 的 field-ref、query-filterable、dataset-generation-changed。
 
-**FieldRef（字段标识）**。FieldRef 是数据处理登记的稳定字段身份，ID 形如 `fld_department`，记录语言资源键、数据类型、单位、时间字段的粒度与业务时区、取值字典或选项 Query、是否为权限维度、所属业务域与责任人、版本与状态（draft / active / deprecated）。FieldRef 只回答"这是哪个业务字段"，不承载口径；口径、层级与生效规则仍由 12.5 的 Metric / Dimension 表达，Dimension 可引用 FieldRef。已被 Query 声明引用的 FieldRef 不可删除，只能标记 deprecated 并给出替代项。
+**FieldRef（字段标识）**。FieldRef 是数据处理登记的稳定字段身份，ID 形如 `fld_department`，记录显示名称（LocalizedText，国际化规范 7）、数据类型、单位、时间字段的粒度与业务时区、取值字典或选项 Query、是否为权限维度、所属业务域与责任人、版本与状态（draft / active / deprecated）。FieldRef 只回答"这是哪个业务字段"，不承载口径；口径、层级与生效规则仍由 12.5 的 Metric / Dimension 表达，Dimension 可引用 FieldRef。已被 Query 声明引用的 FieldRef 不可删除，只能标记 deprecated 并给出替代项。
 
 **字段映射**。Dataset 字段经字段映射绑定到 FieldRef，一个字段至多绑定一个 FieldRef。不同 Dataset 中含义相同而列名不同的字段（同义列）由责任人显式绑定到同一 FieldRef；平台不按列名或别名自动归并（与 12.5"同名不自动等同"一致），只可提示候选。**此条已确认（2026-10-03）**：同义列必须由责任人手动绑定。绑定要求数据类型兼容；时间字段粒度不同时登记换算关系。字段映射随 DatasetVersion 版本化，修改映射生成新版本，并按第 11 节展示受影响的 Query、看板与报表。字段映射同时是第 11 节字段级血缘的输入。
 

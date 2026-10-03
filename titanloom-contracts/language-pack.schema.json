@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/language-pack/0.1",
+  "title": "LanguagePack (draft)",
+  "description": "来源：国际化规范 5.1、6。已发布的不可变语言包版本；激活沿用配置修订与激活分离（后台治理 7.2）。关键文案缺失时不得激活。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packId",
+    "version",
+    "locale",
+    "state",
+    "namespaces",
+    "criticalComplete",
+    "publishedAt"
+  ],
+  "properties": {
+    "packId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+    },
+    "state": {
+      "enum": [
+        "published",
+        "active",
+        "superseded",
+        "withdrawn"
+      ]
+    },
+    "namespaces": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": {
+          "pattern": "^[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*(_(zero|one|two|few|many|other))?$"
+        },
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    },
+    "criticalComplete": {
+      "type": "boolean"
+    },
+    "missingKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "publishedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "active"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "criticalComplete": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}

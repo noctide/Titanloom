@@ -1,7 +1,7 @@
 # Titanloom · 平台能力契约与 Agent 接入规范
 
 > 版本：V1.0｜设计日期：2026-09-26｜修订日期：2026-10-03｜状态：详细设计稿，可用于接口拆解与工程评审；未实现、未验收。
-> 修订：2026-10-01 全文档边界统一，平台运行告警改由 PlatformAlertRule / PlatformAlertInstance 管理、业务告警归所属领域（18，ADR-009）；不再预设公共 ContributionEvent / Contribution Graph 服务（18，ADR-010）；2026-10-03 9.1 Query 请求新增按 FieldRef 的 filters，响应新增 dataGeneration 与列 fieldRef（数据处理 12.6，拟定）；2026-10-03 通读 9.3–11、16：10.3 注明 WAIT_TIMEOUT 为 CLI 本地结果码，16 新增 A29（按 FieldRef 筛选）与 A30（数据代次）验收用例。
+> 修订：2026-10-01 全文档边界统一，平台运行告警改由 PlatformAlertRule / PlatformAlertInstance 管理、业务告警归所属领域（18，ADR-009）；不再预设公共 ContributionEvent / Contribution Graph 服务（18，ADR-010）；2026-10-03 9.1 Query 请求新增按 FieldRef 的 filters，响应新增 dataGeneration 与列 fieldRef（数据处理 12.6，拟定）；2026-10-03 通读 9.3–11、16：10.3 注明 WAIT_TIMEOUT 为 CLI 本地结果码，16 新增 A29（按 FieldRef 筛选）与 A30（数据代次）验收用例；2026-10-03 6.2 与 12.1 示例的 messageKey 改为国际化规范的键名格式。
 > 项目定位：面向大型企业场景设计的开源项目；本文不表示任何组织已立项、授权部署或已交付。实际接入企业数据须遵守使用方的授权与数据规则。
 > 文档定位：总框架的公共工程配套规范，不新增业务能力域，不替代各领域子方案或公共平台能力方案。
 > 权威依据：《Titanloom-总框架设计方案-V1.0.md》及其现行同步基线；本规范负责
@@ -502,7 +502,7 @@ Agent 工作不能通过复制 Job、人工缓存、导出文件或 Player 身�
     "expiresAt": "2026-09-26T09:40:00Z",
     "effectivePolicy": "confirm",
     "preview": {
-      "messageKey": "command.pipelineRun.preview",
+      "messageKey": "dataproc:pipelineRun.preview",
       "messageParams": {"pipelineVersion": "7", "period": "2026-09"},
       "effectScope": "registered_pipeline_outputs",
       "estimateStatus": "bounded_estimate"
@@ -1059,7 +1059,7 @@ Skill 包。
   "requestId": "req_003",
   "error": {
     "code": "RESOURCE_VERSION_CONFLICT",
-    "messageKey": "error.resource.versionConflict",
+    "messageKey": "errors:resourceVersionConflict",
     "messageParams": {},
     "retryable": false,
     "recoveryAction": "refresh_and_prepare",
