@@ -198,7 +198,7 @@ Agent 永远不读取密钥明文；密钥只在服务端与执行宿主解析�
 
 阶段编号以《Titanloom-实施路线与首期工程基线》的 M 序列为准。
 
-- **M4**：SecretRef 最小集与出网守卫（后台治理 10.3 提前）、ChannelConnection、通用 Webhook、DeliveryRoute 与模板、DeliveryRecord、集成中心的通道与路由页面；首批来源为平台告警与 Notification。
+- **M4**：SecretRef 最小集与出网守卫（后台治理 10.3，随 M4 的后台治理 P3 一同交付）、ChannelConnection、通用 Webhook、DeliveryRoute 与模板、DeliveryRecord、集成中心的通道与路由页面；首批来源为平台告警与 Notification。
 - **M5**：InboundEndpoint 与"事件接入"，对接工具自动化 TriggerBinding；入站记录页面；密钥轮换。
 - **条件阶段**：命令与对话类入站；专用机器人预设；邮件、短信等通道；需要网关或中继时的方案（D-15）。
 
