@@ -11,7 +11,7 @@ Titanloom 是一个面向企业场景设计的综合数据与业务平台，覆�
 | `docs/` | 总框架、公共规范（含工程质量与代码规范）、公共平台能力、各业务域子方案、架构决策记录、实施路线、变更记录 |
 | `titanloom-contracts/` | 契约 JSON Schema 草案、状态机、示例与测试 |
 
-建议从 `docs/Titanloom-总框架设计方案-V1.0.md` 与 `docs/Titanloom-实施路线与首期工程基线-V1.0.md` 开始阅读；编写代码前请阅读 `docs/Titanloom-工程质量与代码规范-V1.0.md`。
+建议从 `docs/Titanloom-总框架设计方案-V1.0.md` 与 `docs/Titanloom-实施路线与首期工程基线-V1.0.md` 开始阅读；编写代码前请阅读 `docs/Titanloom-工程质量与代码规范-V1.0.md` 与 `docs/Titanloom-开发项目划分与多Agent协作规范-V1.0.md`。
 
 ## 运行契约测试
 
