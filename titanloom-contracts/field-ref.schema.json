@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://titanloom.local/contracts/field-ref/0.1",
+  "$id": "https://titanloom.local/contracts/field-ref/0.2",
   "title": "FieldRef (draft)",
   "description": "来源：数据处理 12.6。稳定字段身份，只表达是哪个业务字段，不承载口径（口径见 12.5 Metric / Dimension）。时间字段必须声明粒度与业务时区。",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "id",
-    "labelKey",
+    "label",
     "dataType",
     "domain",
     "owner",
@@ -18,10 +18,6 @@
     "id": {
       "type": "string",
       "pattern": "^fld_[a-z0-9_]+$"
-    },
-    "labelKey": {
-      "type": "string",
-      "minLength": 1
     },
     "dataType": {
       "enum": [
@@ -91,6 +87,21 @@
     "replacedBy": {
       "type": "string",
       "pattern": "^fld_[a-z0-9_]+$"
+    },
+    "label": {
+      "type": "object",
+      "description": "显示名称，LocalizedText（国际化规范 7）：zh-CN 必填",
+      "required": [
+        "zh-CN"
+      ],
+      "propertyNames": {
+        "pattern": "^[a-z]{2,3}(-[A-Z][a-z]{3})?(-[A-Z]{2})?$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
     }
   },
   "allOf": [

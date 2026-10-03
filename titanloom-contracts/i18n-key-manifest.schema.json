@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/i18n-key-manifest/0.1",
+  "title": "I18nKeyManifest (draft)",
+  "description": "来源：国际化规范 3、5.2。仓库 i18n/<命名空间>.yaml 的结构：键清单与出厂默认文案，部署时只补数据库缺失的键。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "namespace",
+    "keys"
+  ],
+  "properties": {
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?$"
+    },
+    "keys": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "description",
+          "defaults"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "params": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[a-z][A-Za-z0-9]*$"
+            },
+            "additionalProperties": {
+              "enum": [
+                "string",
+                "number",
+                "date",
+                "datetime",
+                "currency",
+                "percent"
+              ]
+            }
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "plural": {
+            "type": "boolean"
+          },
+          "deprecated": {
+            "type": "boolean"
+          },
+          "defaults": {
+            "type": "object",
+            "required": [
+              "zh-CN",
+              "en-US"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "zh-CN": {
+                "$ref": "#/$defs/text"
+              },
+              "en-US": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "description": "复数形式，按 CLDR 类别",
+          "propertyNames": {
+            "enum": [
+              "zero",
+              "one",
+              "two",
+              "few",
+              "many",
+              "other"
+            ]
+          },
+          "required": [
+            "other"
+          ],
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    }
+  }
+}

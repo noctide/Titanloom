@@ -1,5 +1,5 @@
 {
-  "_note": "M0 草案：错误码注册表。documented 取自能力契约 12.2；proposed 为其他文档要求但尚无代码的拟定项，待冻结。retryable 仅表示协议允许按 recoveryAction 恢复，不是可无限重新提交。",
+  "_note": "M0 草案：错误码注册表。documented 取自能力契约 12.2；proposed 为其他文档要求但尚无代码的拟定项，待冻结。retryable 仅表示协议允许按 recoveryAction 恢复，不是可无限重新提交。 messageKey 由错误码机械推导（国际化规范 3）：VERSION_CONFLICT → errors:versionConflict。",
   "codes": [
     {
       "code": "INVALID_REQUEST",
@@ -7,7 +7,8 @@
       "retryable": false,
       "recoveryAction": "fix_input",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:invalidRequest"
     },
     {
       "code": "INPUT_VALIDATION_FAILED",
@@ -15,7 +16,8 @@
       "retryable": false,
       "recoveryAction": "fix_input",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:inputValidationFailed"
     },
     {
       "code": "AUTHENTICATION_REQUIRED",
@@ -23,7 +25,8 @@
       "retryable": false,
       "recoveryAction": "reauthenticate",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:authenticationRequired"
     },
     {
       "code": "TOKEN_EXPIRED",
@@ -31,7 +34,8 @@
       "retryable": false,
       "recoveryAction": "reauthenticate",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:tokenExpired"
     },
     {
       "code": "ACCESS_DENIED",
@@ -39,7 +43,8 @@
       "retryable": false,
       "recoveryAction": "stop",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:accessDenied"
     },
     {
       "code": "DELEGATION_REVOKED",
@@ -47,7 +52,8 @@
       "retryable": false,
       "recoveryAction": "stop",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:delegationRevoked"
     },
     {
       "code": "RESOURCE_NOT_FOUND",
@@ -55,7 +61,8 @@
       "retryable": false,
       "recoveryAction": "none",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:resourceNotFound"
     },
     {
       "code": "CONFIRMATION_REQUIRED",
@@ -63,7 +70,8 @@
       "retryable": false,
       "recoveryAction": "confirm_then_submit",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:confirmationRequired"
     },
     {
       "code": "RESOURCE_VERSION_CONFLICT",
@@ -71,7 +79,8 @@
       "retryable": false,
       "recoveryAction": "refresh_and_prepare",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:resourceVersionConflict"
     },
     {
       "code": "IDEMPOTENCY_CONFLICT",
@@ -79,7 +88,8 @@
       "retryable": false,
       "recoveryAction": "check_intent",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:idempotencyConflict"
     },
     {
       "code": "CAPABILITY_DISABLED",
@@ -87,7 +97,8 @@
       "retryable": false,
       "recoveryAction": "stop_or_migrate",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:capabilityDisabled"
     },
     {
       "code": "CONTRACT_VERSION_UNSUPPORTED",
@@ -95,7 +106,8 @@
       "retryable": false,
       "recoveryAction": "stop_or_migrate",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:contractVersionUnsupported"
     },
     {
       "code": "COMMAND_EXPIRED",
@@ -103,7 +115,8 @@
       "retryable": false,
       "recoveryAction": "check_business_fact",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:commandExpired"
     },
     {
       "code": "RESULT_EXPIRED",
@@ -111,7 +124,8 @@
       "retryable": false,
       "recoveryAction": "check_business_fact",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:resultExpired"
     },
     {
       "code": "IDEMPOTENCY_WINDOW_EXPIRED",
@@ -119,7 +133,8 @@
       "retryable": false,
       "recoveryAction": "check_business_fact",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:idempotencyWindowExpired"
     },
     {
       "code": "PAYLOAD_TOO_LARGE",
@@ -127,7 +142,8 @@
       "retryable": false,
       "recoveryAction": "shrink_or_use_asset",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:payloadTooLarge"
     },
     {
       "code": "RESULT_TOO_LARGE",
@@ -135,7 +151,8 @@
       "retryable": false,
       "recoveryAction": "shrink_or_use_asset",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:resultTooLarge"
     },
     {
       "code": "QUERY_BUDGET_EXCEEDED",
@@ -143,7 +160,8 @@
       "retryable": false,
       "recoveryAction": "narrow_or_async",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:queryBudgetExceeded"
     },
     {
       "code": "RATE_LIMITED",
@@ -151,7 +169,8 @@
       "retryable": true,
       "recoveryAction": "backoff_retry_after",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:rateLimited"
     },
     {
       "code": "CAPACITY_EXCEEDED",
@@ -159,7 +178,8 @@
       "retryable": true,
       "recoveryAction": "backoff_retry_after",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:capacityExceeded"
     },
     {
       "code": "DEPENDENCY_UNAVAILABLE",
@@ -167,7 +187,8 @@
       "retryable": true,
       "recoveryAction": "retry_per_contract",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:dependencyUnavailable"
     },
     {
       "code": "REQUEST_DEADLINE_EXCEEDED",
@@ -175,7 +196,8 @@
       "retryable": false,
       "recoveryAction": "query_original_execution",
       "status": "documented",
-      "source": "能力契约 12.2"
+      "source": "能力契约 12.2",
+      "messageKey": "errors:requestDeadlineExceeded"
     },
     {
       "code": "DEPENDENCY_BLOCKED",
@@ -183,7 +205,8 @@
       "retryable": false,
       "recoveryAction": "resolve_dependencies",
       "status": "proposed",
-      "source": "后台治理 13.3：依赖阻塞"
+      "source": "后台治理 13.3：依赖阻塞",
+      "messageKey": "errors:dependencyBlocked"
     },
     {
       "code": "PROJECTION_STALE",
@@ -191,7 +214,8 @@
       "retryable": true,
       "recoveryAction": "refresh_projection",
       "status": "proposed",
-      "source": "后台治理 13.3：投影陈旧"
+      "source": "后台治理 13.3：投影陈旧",
+      "messageKey": "errors:projectionStale"
     },
     {
       "code": "PARTIAL_ACTIVATION",
@@ -199,7 +223,8 @@
       "retryable": false,
       "recoveryAction": "reconcile",
       "status": "proposed",
-      "source": "后台治理 13.3：部分激活"
+      "source": "后台治理 13.3：部分激活",
+      "messageKey": "errors:partialActivation"
     },
     {
       "code": "RECONCILIATION_REQUIRED",
@@ -207,7 +232,8 @@
       "retryable": false,
       "recoveryAction": "reconcile",
       "status": "proposed",
-      "source": "后台治理 13.3：待核对；能力契约 8.3 reconciling"
+      "source": "后台治理 13.3：待核对；能力契约 8.3 reconciling",
+      "messageKey": "errors:reconciliationRequired"
     },
     {
       "code": "BUDGET_EXCEEDED",
@@ -215,7 +241,8 @@
       "retryable": false,
       "recoveryAction": "narrow_or_request_quota",
       "status": "proposed",
-      "source": "后台治理 13.3：预算不足（非查询场景）"
+      "source": "后台治理 13.3：预算不足（非查询场景）",
+      "messageKey": "errors:budgetExceeded"
     },
     {
       "code": "EGRESS_TARGET_NOT_APPROVED",
@@ -223,7 +250,8 @@
       "retryable": false,
       "recoveryAction": "stop",
       "status": "proposed",
-      "source": "集成与消息通道 3.4"
+      "source": "集成与消息通道 3.4",
+      "messageKey": "errors:egressTargetNotApproved"
     },
     {
       "code": "CHANNEL_DISABLED",
@@ -231,7 +259,8 @@
       "retryable": false,
       "recoveryAction": "enable_channel",
       "status": "proposed",
-      "source": "集成与消息通道 8"
+      "source": "集成与消息通道 8",
+      "messageKey": "errors:channelDisabled"
     }
   ]
 }
