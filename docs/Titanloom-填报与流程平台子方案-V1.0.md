@@ -1,7 +1,7 @@
 # Titanloom-填报与流程平台子方案-V1.0
 
-> 文档状态：V1.0 架构基线｜修订日期：2026-10-02\
-> 修订：2026-10-01 全文档边界统一，流程人工任务统一为 HumanTask，流程中的 Agent 节点改名 AgentCall（14.1），业务基表与人员主数据的归属改正（2），补隔离门禁 G-ISO 说明，新增 24 验收基线与 25 建设顺序；2026-10-02 新增 19.1 异常与恢复。\
+> 文档状态：V1.0 架构基线｜修订日期：2026-10-03\
+> 修订：2026-10-01 全文档边界统一，流程人工任务统一为 HumanTask，流程中的 Agent 节点改名 AgentCall（14.1），业务基表与人员主数据的归属改正（2），补隔离门禁 G-ISO 说明，新增 24 验收基线与 25 建设顺序；2026-10-02 新增 19.1 异常与恢复；2026-10-03 5.5 更正：Capture Host / Adapter 已在插件体系登记，宿主协议尚未发布。\
 > 平台定位：Titanloom 的业务事实采集、业务交互与业务流转权威平台\
 > 核心原则：业务事实只记录一次；采集入口允许差异；业务语义必须可解释、可映射、可关联；能力不设人为上限，资源必须有明确上限。
 
@@ -182,7 +182,7 @@ ManualClick、Hotkey、Selection、ValueChange、DOMChange、Clipboard、Externa
 
 ### 5.5 安全边界
 
-Capture Host / Adapter、浏览器扩展与 Desktop Companion 尚未登记为插件体系的宿主类型；在插件体系完成对应宿主协议与验收前，不属首期交付范围，首期入口为 Form、Excel / CSV、Paste 与 API。
+Capture Host / Adapter 已在插件体系第 2 节登记为宿主类型，但宿主协议尚未发布；浏览器扩展与 Desktop Companion 尚未登记。在插件体系发布对应宿主协议并通过验收前，以上均不属首期交付范围，首期入口为 Form、Excel / CSV、Paste 与 API。
 
 
 Capture Context 永远视为不可信输入。必须经过 Adapter → Mapping →
