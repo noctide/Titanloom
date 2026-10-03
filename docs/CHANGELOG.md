@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+### 2026-10-03｜数据可视化与数据处理的接口补齐（拟定）
+
+-   **数据处理 12.6**：新增字段标识 FieldRef（稳定字段身份，同义列由责任人显式绑定，不按列名自动归并）、Query 可筛选声明 filterable（按 FieldRef 声明参数槽位、操作与粒度，手写 SQL 须声明绑定位置）、数据代次 dataGeneration 与事件 `data.dataset.generation_changed`（单调递增，回退也递增，不含数据行）。此前可视化 8.2、8.3、16.2 引用了这些对象，但数据处理与能力契约均未定义。
+-   **能力契约 9.1**：Query 请求新增按 FieldRef 的 `filters`（eq / in / range 左闭右开 / relative 由服务端解析 / search / hierarchy；未声明的筛选返回参数错误），响应新增 `dataGeneration` 与列 `fieldRef`。
+-   **数据可视化**：8.2、8.3 改为引用数据处理 12.6；16.2 报表生成完成事件命名为 `visualization.report.generated`，经 Notification 与集成通道 DeliveryRoute 外发，受通道最高数据级别限制。
+-   **集成与消息通道 3.1**：明确领域事件须经 Notification 形成通知类别后才可路由。
+-   **已确认的两项**：同义列必须由责任人手动绑定，不按列名自动归并；版本回退时数据代次继续递增，不复用旧值。
+-   **契约**：新增 field-ref、query-filterable、dataset-generation-changed 三个 Schema，Query 请求与响应 Schema 升至 0.2；新增第六部分测试 34 项，契约测试共 193 项。
+
 ### 2026-10-03｜设计基线 V1.0-rc1（首个公开版本）
 
 -   **文档体系**：总体架构、公共平台规范、公共平台能力、业务能力域四层。包含总框架、平台能力契约与 Agent 接入规范、Shell 与门户及个人工作台、填报与流程、考勤签到、工具自动化、数据处理、知识与文档、数据可视化、后台治理、插件与扩展、集成与消息通道、智能管家、部署拓扑与容量规划、开源与第三方依赖治理、实施路线与首期工程基线、架构决策记录（ADR-001 至 ADR-019）。

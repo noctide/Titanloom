@@ -1,7 +1,7 @@
 # Titanloom · 平台能力契约与 Agent 接入规范
 
-> 版本：V1.0｜设计日期：2026-09-26｜修订日期：2026-10-01｜状态：详细设计稿，可用于接口拆解与工程评审；未实现、未验收。
-> 修订：2026-10-01 全文档边界统一，平台运行告警改由 PlatformAlertRule / PlatformAlertInstance 管理、业务告警归所属领域（18，ADR-009）；不再预设公共 ContributionEvent / Contribution Graph 服务（18，ADR-010）。
+> 版本：V1.0｜设计日期：2026-09-26｜修订日期：2026-10-03｜状态：详细设计稿，可用于接口拆解与工程评审；未实现、未验收。
+> 修订：2026-10-01 全文档边界统一，平台运行告警改由 PlatformAlertRule / PlatformAlertInstance 管理、业务告警归所属领域（18，ADR-009）；不再预设公共 ContributionEvent / Contribution Graph 服务（18，ADR-010）；2026-10-03 9.1 Query 请求新增按 FieldRef 的 filters，响应新增 dataGeneration 与列 fieldRef（数据处理 12.6，拟定）。
 > 项目定位：面向大型企业场景设计的开源项目；本文不表示任何组织已立项、授权部署或已交付。实际接入企业数据须遵守使用方的授权与数据规则。
 > 文档定位：总框架的公共工程配套规范，不新增业务能力域，不替代各领域子方案或公共平台能力方案。
 > 权威依据：《Titanloom-总框架设计方案-V1.0.md》及其现行同步基线；本规范负责
@@ -801,7 +801,8 @@ SQL 替换正式 Query。
 {
   "contractVersion": "1.0.0",
   "queryVersion": "4",
-  "parameters": {"month": "2026-09", "departmentId": "dept_05"},
+  "parameters": {"month": "2026-09"},
+  "filters": [{"field": "fld_department", "op": "in", "values": ["dept_05"]}],
   "page": {"limit": 100, "cursor": null},
   "consistency": {"mode": "snapshot", "snapshotId": "snap_hours_202609"}
 }
@@ -814,12 +815,13 @@ SQL 替换正式 Query。
     "queryId": "q_hours",
     "queryVersion": "4",
     "datasetVersion": "32",
+    "dataGeneration": 57,
     "snapshotId": "snap_hours_202609",
     "sourceWatermarks": [{"sourceId": "src_hours", "version": "batch_88"}],
     "dataAsOf": "2026-09-26T09:00:00Z",
     "qualityStatus": "passed",
     "columns": [
-      {"name": "employeeId", "type": "string"},
+      {"name": "employeeId", "type": "string", "fieldRef": "fld_employee"},
       {"name": "hours", "type": "decimal", "scale": 2, "encoding": "string"}
     ],
     "rows": [{"employeeId": "000123", "hours": "168.50"}],
@@ -832,6 +834,12 @@ SQL 替换正式 Query。
 这是获准交付后的结果示例，不表示任意 Agent 可见工号或工时。Query
 执行成功也可以带质量告警或新鲜度不足；客户端必须展示声明状态，不把 HTTP
 200 当作指标已认证。
+
+筛选按 FieldRef 经 `filters` 传入，只能使用该 Query 已声明为可筛选的 FieldRef，操作为
+`eq`、`in`、`range`（左闭右开）、`relative`（由服务端按业务时区解析）、`search` 或
+`hierarchy`；未声明的筛选返回参数错误，不静默忽略。`parameters` 只承载 Query
+声明的其他参数。响应的 `dataGeneration` 是所读 Dataset 的数据代次，列上的
+`fieldRef` 标明该列绑定的字段标识；两者的定义见数据处理子方案 12.6（拟定）。
 
 ### 9.2 一致性、精度与查询预算
 

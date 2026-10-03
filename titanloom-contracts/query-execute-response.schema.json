@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://titanloom.local/contracts/query-execute-response/0.1",
+  "$id": "https://titanloom.local/contracts/query-execute-response/0.2",
   "title": "QueryExecuteResponse (M0 draft)",
   "description": "来源：能力契约 9.1、9.2，数据处理 15.1。精确十进制与大整数用字符串编码；qualityStatus 只可能是 passed 或 warned（blocked 的数据不会发布）；HTTP 200 不等于指标已认证，客户端须展示声明状态。",
   "type": "object",
@@ -109,6 +109,10 @@
                 "enum": [
                   "string"
                 ]
+              },
+              "fieldRef": {
+                "type": "string",
+                "pattern": "^fld_[a-z0-9_]+$"
               }
             },
             "allOf": [
@@ -147,6 +151,11 @@
         },
         "truncated": {
           "type": "boolean"
+        },
+        "dataGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "所读 Dataset 的数据代次（数据处理 12.6）；snapshot 模式为快照固定时的代次"
         }
       }
     }

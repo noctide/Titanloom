@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/dataset-generation-changed/0.1",
+  "title": "DatasetGenerationChanged payload (draft)",
+  "description": "来源：数据处理 12.6。outbox 事件 data.dataset.generation_changed 的载荷；只是变化通知，不含数据行。代次单调递增，回退也递增。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "datasetId",
+    "generation",
+    "datasetVersion",
+    "changeKind",
+    "dataAsOf",
+    "qualityResult"
+  ],
+  "properties": {
+    "datasetId": {
+      "type": "string"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previousGeneration": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "datasetVersion": {
+      "type": "string"
+    },
+    "changeKind": {
+      "enum": [
+        "publish",
+        "rollback",
+        "incremental",
+        "correction"
+      ]
+    },
+    "dataAsOf": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sourceWatermarks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceId",
+          "version"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "qualityResult": {
+      "enum": [
+        "passed",
+        "warned"
+      ],
+      "description": "blocked 的批次不会发布，因此不产生代次"
+    }
+  }
+}
