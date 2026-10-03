@@ -43,7 +43,7 @@ miss=[c["code"] for c in reg if c["status"]=="documented" and c["code"] not in s
 check("documented 错误码均出现在能力契约中", not miss)
 bad=[]
 for c in reg:
-    body={"requestId":"r1","error":{"code":c["code"],"messageKey":"error."+c["code"].lower(),"retryable":c["retryable"],"recoveryAction":c["recoveryAction"]}}
+    body={"requestId":"r1","error":{"code":c["code"],"messageKey":c["messageKey"],"retryable":c["retryable"],"recoveryAction":c["recoveryAction"]}}
     if not ok("error",body): bad.append(c["code"])
 check("注册表中每个错误码都能构造出合法错误体", not bad)
 print(f"\n{len(fails)} 项失败" if fails else "\n全部通过"); sys.exit(1 if fails else 0)

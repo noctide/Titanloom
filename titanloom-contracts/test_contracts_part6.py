@@ -57,7 +57,7 @@ x = copy.deepcopy(rs); x["data"]["columns"][0]["fieldRef"] = "employee"
 check("列 fieldRef 必须是 FieldRef 格式", not ok("query-execute-response", x))
 
 # ---- FieldRef
-fr = {"id": "fld_work_date", "labelKey": "field.work_date", "dataType": "date", "grain": "day",
+fr = {"id": "fld_work_date", "label": {"zh-CN": "工作日期", "en-US": "Work date"}, "dataType": "date", "grain": "day",
       "timezone": "Asia/Shanghai", "domain": "attendance", "owner": "role_data_owner", "version": 1, "status": "active"}
 check("日期型 FieldRef 有效", ok("field-ref", fr))
 x = copy.deepcopy(fr); del x["timezone"]
@@ -70,7 +70,7 @@ x["replacedBy"] = "fld_work_day"
 check("废弃并给出替代项有效", ok("field-ref", x))
 x = copy.deepcopy(fr); x["options"] = {"queryId": "q_opts", "dictionaryRef": "dict_x"}
 check("选项来源只能二选一", not ok("field-ref", x))
-x = {"id": "fld_department", "labelKey": "field.department", "dataType": "string", "permissionDimension": True,
+x = {"id": "fld_department", "label": {"zh-CN": "部门"}, "dataType": "string", "permissionDimension": True,
      "domain": "platform", "owner": "role_md", "version": 2, "status": "active", "options": {"queryId": "q_dept_options"}}
 check("字符串型 FieldRef 无需时区", ok("field-ref", x))
 

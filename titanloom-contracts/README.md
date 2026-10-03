@@ -20,6 +20,7 @@
 | invocation-context / delegation / confirmation / invocation / outbox-event .schema.json | 调用链对象：可信调用上下文、委托、确认、调用、事件信封（来源：能力契约 5.2、5.3、6.4、7.2、13，考勤 15.3） |
 | channel-connection / delivery-route / inbound-endpoint / inbound-receipt .schema.json | 集成与消息通道对象（来源：集成与消息通道子方案 3、4）：目标只能是 SecretRef、入站必须鉴权与时间窗、命令类入站必须绑定身份 |
 | field-ref / query-filterable / dataset-generation-changed .schema.json | 字段标识 FieldRef、Query 可筛选声明、数据代次变化事件载荷（拟定，来源：数据处理 12.6、可视化 8.2–8.3）；Query 请求新增按 FieldRef 的 filters，响应新增 dataGeneration 与列 fieldRef（能力契约 9.1） |
-| test_contracts.py、test_contracts_part2.py … test_contracts_part6.py | 校验示例、负例与状态机一致性；`pip install jsonschema` 后分别运行 |
+| i18n-key-manifest / language-pack / localized-text .schema.json | 键清单与出厂默认文案、已发布语言包（关键文案缺失不得激活）、配置数据中的多语言名称（来源：国际化规范 3–7）；错误码注册表每个码附由错误码推导的 `errors:` 文案键 |
+| test_contracts.py、test_contracts_part2.py … test_contracts_part7.py | 校验示例、负例与状态机一致性；`pip install jsonschema` 后分别运行 |
 
 集成通道的 channel-connection、delivery-route、inbound-endpoint 现使用 revisionState 与 operationalState 两个字段，不再使用单一 state。尚未覆盖：MessageTemplate、DeliveryRecord / Attempt、ExternalIdentityRef，以及各领域能力的 inputSchema / outputSchema。字段只取自规范已写明部分，未写明的（如事件类型清单、数据级别枚举的最终取值）属提案，待冻结。

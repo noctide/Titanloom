@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/localized-text/0.1",
+  "title": "LocalizedText (draft)",
+  "description": "来源：国际化规范 7。配置数据中的名称；键为 BCP 47 语言标签，zh-CN 必填，缺失时回退 zh-CN。不作为任何对象的标识。",
+  "type": "object",
+  "required": [
+    "zh-CN"
+  ],
+  "minProperties": 1,
+  "propertyNames": {
+    "pattern": "^[a-z]{2,3}(-[A-Z][a-z]{3})?(-[A-Z]{2})?$"
+  },
+  "additionalProperties": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 500
+  }
+}
