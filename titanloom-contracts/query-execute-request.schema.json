@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://titanloom.local/contracts/query-execute-request/0.1",
+  "$id": "https://titanloom.local/contracts/query-execute-request/0.2",
   "title": "QueryExecuteRequest (M0 draft)",
-  "description": "来源：能力契约 9.1、9.2（titanloom.data.query.execute）。固定 queryVersion 与参数；不允许提交任意底层连接或 SQL；snapshot 模式必须带 snapshotId，不支持时返回错误而不是悄悄降为 live。",
+  "description": "来源：能力契约 9.1、9.2（titanloom.data.query.execute）。固定 queryVersion 与参数；不允许提交任意底层连接或 SQL；snapshot 模式必须带 snapshotId，不支持时返回错误而不是悄悄降为 live。 筛选按 FieldRef 经 filters 传入，只能使用 Query 已声明的可筛选字段（数据处理 12.6）。",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -61,6 +61,256 @@
         "snapshotId": {
           "type": "string"
         }
+      }
+    },
+    "filters": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "op"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "pattern": "^fld_[a-z0-9_]+$"
+          },
+          "op": {
+            "enum": [
+              "eq",
+              "in",
+              "range",
+              "relative",
+              "search",
+              "hierarchy"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            }
+          },
+          "from": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          },
+          "to": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "op": {
+                  "const": "eq"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "value"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "values"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "from"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "to"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "op": {
+                  "enum": [
+                    "in",
+                    "hierarchy"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "values"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "value"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "from"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "to"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "op": {
+                  "const": "range"
+                }
+              }
+            },
+            "then": {
+              "anyOf": [
+                {
+                  "required": [
+                    "from"
+                  ]
+                },
+                {
+                  "required": [
+                    "to"
+                  ]
+                }
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "value"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "values"
+                    ]
+                  }
+                ]
+              },
+              "description": "左闭右开 [from, to)"
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "op": {
+                  "const": "relative"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "value"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                }
+              },
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "values"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "from"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "to"
+                    ]
+                  }
+                ]
+              },
+              "description": "相对日期令牌，由服务端按业务时区解析"
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "op": {
+                  "const": "search"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "value"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "values"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "from"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "to"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
       }
     }
   },

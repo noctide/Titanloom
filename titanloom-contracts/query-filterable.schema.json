@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/query-filterable/0.1",
+  "title": "QueryFilterable (draft)",
+  "description": "来源：数据处理 12.6、可视化 8.2。Query 契约中的可筛选声明：每个 FieldRef 只声明一次；手写 SQL 的 Query 须给出参数槽位绑定位置（derivation=declared），平台不改写 SQL。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "queryId",
+    "queryVersion",
+    "derivation",
+    "filterable"
+  ],
+  "properties": {
+    "queryId": {
+      "type": "string"
+    },
+    "queryVersion": {
+      "type": "string"
+    },
+    "derivation": {
+      "enum": [
+        "semantic",
+        "declared"
+      ],
+      "description": "semantic：由 Dataset 语义层推导；declared：手写 SQL 显式声明"
+    },
+    "grain": {
+      "enum": [
+        "row",
+        "day",
+        "week",
+        "month",
+        "quarter",
+        "year"
+      ]
+    },
+    "filterable": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fieldRef",
+          "param",
+          "operators"
+        ],
+        "properties": {
+          "fieldRef": {
+            "type": "string",
+            "pattern": "^fld_[a-z0-9_]+$"
+          },
+          "param": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+          },
+          "operators": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "eq",
+                "in",
+                "range",
+                "relative",
+                "search",
+                "hierarchy"
+              ]
+            }
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "maxValues": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "options": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "queryId": {
+                "type": "string"
+              },
+              "dictionaryRef": {
+                "type": "string"
+              }
+            },
+            "minProperties": 1,
+            "maxProperties": 1
+          },
+          "sqlBinding": {
+            "type": "string",
+            "minLength": 1,
+            "description": "手写 SQL 中的命名占位符"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "derivation": {
+            "const": "declared"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "filterable": {
+            "items": {
+              "required": [
+                "sqlBinding"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

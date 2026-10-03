@@ -20,7 +20,7 @@ Titanloom 是一个面向企业场景设计的综合数据与业务平台，覆�
 ```
 pip install jsonschema
 cd titanloom-contracts
-python3 test_contracts.py && python3 test_contracts_part2.py && python3 test_contracts_part3.py && python3 test_contracts_part4.py && python3 test_contracts_part5.py
+for t in test_contracts*.py; do python3 "$t" || exit 1; done
 ```
 
 ## 许可证

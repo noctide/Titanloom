@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/field-ref/0.1",
+  "title": "FieldRef (draft)",
+  "description": "来源：数据处理 12.6。稳定字段身份，只表达是哪个业务字段，不承载口径（口径见 12.5 Metric / Dimension）。时间字段必须声明粒度与业务时区。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "labelKey",
+    "dataType",
+    "domain",
+    "owner",
+    "version",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^fld_[a-z0-9_]+$"
+    },
+    "labelKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dataType": {
+      "enum": [
+        "string",
+        "integer",
+        "decimal",
+        "boolean",
+        "date",
+        "time",
+        "timestamp"
+      ]
+    },
+    "unit": {
+      "type": "string"
+    },
+    "grain": {
+      "enum": [
+        "day",
+        "week",
+        "month",
+        "quarter",
+        "year",
+        "hour",
+        "minute"
+      ]
+    },
+    "timezone": {
+      "type": "string",
+      "minLength": 1
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "queryId": {
+          "type": "string"
+        },
+        "dictionaryRef": {
+          "type": "string"
+        }
+      },
+      "minProperties": 1,
+      "maxProperties": 1
+    },
+    "permissionDimension": {
+      "type": "boolean"
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "deprecated"
+      ]
+    },
+    "replacedBy": {
+      "type": "string",
+      "pattern": "^fld_[a-z0-9_]+$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "dataType": {
+            "enum": [
+              "date",
+              "timestamp"
+            ]
+          }
+        },
+        "required": [
+          "dataType"
+        ]
+      },
+      "then": {
+        "required": [
+          "grain",
+          "timezone"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "deprecated"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "replacedBy"
+        ]
+      }
+    }
+  ]
+}
