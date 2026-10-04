@@ -357,7 +357,7 @@ idempotency key 重做业务动作。
   AutomationRun           工具自动化              确定性/预配置自动化运行；Agent
                                                   可调用或观察
 
-  WorkflowInstance /      填报与流程              业务流转与人工任务；Agent
+  WorkflowInstance /      表单平台              业务流转与人工任务；Agent
   HumanTask                                       可发起受控能力或等待
 
   PipelineRun             数据处理                数据 DAG 业务运行；Agent
@@ -646,7 +646,7 @@ success 不满足完成证据。
     Capability、Command、Delegation、三道门、幂等、Prepare/Confirm/Submit
     和公共 Job 语义。
 -   Shell：拥有入口、页面上下文、导航和工作台承载；不拥有 AgentTask。
--   填报与流程：拥有 BusinessRecord、WorkflowInstance、HumanTask。
+-   表单平台：拥有 BusinessRecord、WorkflowInstance、HumanTask。
 -   考勤：拥有排班、考勤事实、AttendanceAlert 等业务语义。
 -   工具自动化：拥有
     Tool、AutomationPlan、TriggerOccurrence、AutomationRun；长期确定性监控由此承载。
