@@ -93,8 +93,8 @@ Schema、调用方向、执行位置、权限、模型交付、隔离、资源�
   / Auth Adapter                                                                                    
   Channel Preset /        出站通道预设（模板骨架、签名方案、限频建议）与入站适配预设；仅声明式配置，不含任意脚本；首期只内置通用 Webhook，其余按真实需求认证
   Inbound Adapter Preset  
-  Capture Host / Adapter  填报与流程的快捷采集宿主与页面适配器；仍经 Adapter → Mapping → Validation → BusinessCommand 需先发布宿主协议、认证后再开放，不属首期
-  Workflow NodeType /     填报与流程的流程节点类型、表单脚本与 HTML Block 宿主；WorkflowInstance / HumanTask 仍归填报与流程 需先发布宿主协议、认证后再开放，不属首期
+  Capture Host / Adapter  表单平台的快捷采集宿主与页面适配器；仍经 Adapter → Mapping → Validation → BusinessCommand 需先发布宿主协议、认证后再开放，不属首期
+  Workflow NodeType /     表单平台的流程节点类型、表单脚本与 HTML Block 宿主；WorkflowInstance / HumanTask 仍归表单平台 需先发布宿主协议、认证后再开放，不属首期
   Form Script / HTML Block 
   ------------------------------------------------------------------------------------------------------------------------------------------------------
 
