@@ -1,6 +1,6 @@
 # Titanloom · 开发项目划分与多 Agent 协作规范
 
-> 版本：V1.0｜日期：2026-10-03｜修订：2026-10-04 forms 项目显示名改为表单平台（key 不变）；shell 增公告与移动端导航，admin 增业务参数页；2026-10-05 shell 增工作台默认卡片与"我发起的"聚合｜状态：公共平台规范，随 M0 生效；项目清单与读取清单在 M0 落成仓库中的清单文件与各项目 Agent 说明。
+> 版本：V1.0｜日期：2026-10-03｜修订：2026-10-04 forms 项目显示名改为表单平台（key 不变）；shell 增公告与移动端导航，admin 增业务参数页；2026-10-05 shell 增工作台默认卡片与"我发起的"聚合；2026-10-06 shell 增全局悬浮窗与待办抽屉、客服、全局反馈、快捷导航与首页卡片，admin 增反馈与工单处理页｜状态：公共平台规范，随 M0 生效；项目清单与读取清单在 M0 落成仓库中的清单文件与各项目 Agent 说明。
 > 定位：规定开发工作如何按子方案拆成开发项目、每个项目的执行 Agent 读什么、能改什么，以及"架构设计 → Agent 执行 → 审核"的流程。本文不改变运行时架构：系统仍是总框架规定的模块化单体，项目划分只是开发分工；模块边界、对象 Owner 与公共契约以总框架、能力契约和各子方案为准。
 > 依据：总框架 4、5、8.1、14；能力契约 2、13；实施路线 3、5；《Titanloom-工程质量与代码规范》；ADR-020。
 
@@ -72,8 +72,8 @@ flowchart TB
 | execution 命令与执行 | 能力契约 3、6、7、8、13、14；总框架 12.4、13 | 能力目录、命令、确认、调用、幂等记录、outbox、JobRun / JobAttempt、有界本地 Runner、控制服务（调度、分派、租约与核对） | `apps/api/titanloom/execution` | — | M1 |
 | facilities 资产·审计·通知 | 总框架 8.7、9；能力契约 9.4；后台治理 11.1、11.3、12.2；国际化规范 | Asset 服务（稳定 ID、版本、派生规格、访问授权）、AuditEvent、Notification 与待办投递、语言资源服务（文案、语言包、术语表、默认文案导入、服务端渲染适配层） | `apps/api/titanloom/facilities` | — | M1；通知 M4 |
 | plugin-host 插件宿主 | 插件与扩展体系；总框架 8.6 | 清单与签名校验、Contribution / Binding / Host、服务契约与组合版本、运行实例生命周期、宿主 SDK；隔离宿主（G-ISO） | `apps/api/titanloom/plugin_host`、`packages/host-sdk` | — | M1 阶段 A；M2–M3 B1；M6 B2、C |
-| shell 门户与工作台 | Shell 与门户及个人工作台 | 导航（含移动端）、资源路由、ShellContext、WorkspacePage / Version、全平台待办、"我发起的"与搜索入口、工作台默认卡片、公告与阅读回执、启动体验；前端应用框架与公共 UI 组件；`common` 命名空间文案 | `apps/api/titanloom/shell` | `apps/web/src/shell`、`apps/web/src/shared` | M1 A1；M4 A2；M6 B–C |
-| admin 后台治理 | 后台治理中心 | 治理投影、配置修订与激活、配额与预留、依赖图与运行图、权限诊断、平台告警、备份恢复入口、集成中心页面承载、业务参数页（ADR-022）、语言与术语页 | `apps/api/titanloom/admin` | `apps/web/src/domains/admin` | M0 P0；M1 P1；M4 P2–P3 |
+| shell 门户与工作台 | Shell 与门户及个人工作台 | 导航（含移动端）、资源路由、ShellContext、WorkspacePage / Version、全平台待办（全局悬浮窗与待办抽屉）、"我发起的"与搜索入口、工作台默认卡片、快捷导航与首页卡片、公告与阅读回执、客服入口与全局反馈、启动体验与首页宣传轮播；前端应用框架与公共 UI 组件；`common` 命名空间文案 | `apps/api/titanloom/shell` | `apps/web/src/shell`、`apps/web/src/shared` | M1 A1；M4 A2；M6 B–C |
+| admin 后台治理 | 后台治理中心 | 治理投影、配置修订与激活、配额与预留、依赖图与运行图、权限诊断、平台告警、备份恢复入口、集成中心页面承载、业务参数页（ADR-022）、语言与术语页、反馈与工单处理页 | `apps/api/titanloom/admin` | `apps/web/src/domains/admin` | M0 P0；M1 P1；M4 P2–P3 |
 | integration 集成与消息通道 | 集成与消息通道 | ChannelConnection、DeliveryRoute、模板、投递记录、InboundEndpoint / InboundRoute、出网守卫、SecretRef 最小集 | `apps/api/titanloom/integration` | `apps/web/src/domains/integration` | M4 出站；M5 入站 |
 | forms 表单平台 | 表单平台 | RecordType、BusinessRecord / RecordRevision、导入、WorkflowInstance / HumanTask、L0 表单运行 | `apps/api/titanloom/forms` | `apps/web/src/domains/forms` | M2；M5 阶段二 |
 | attendance 考勤 | 考勤签到 | 班次与排班、签到证据、申报与修订、额度、正式结果、AttendanceAlert、导出适配 | `apps/api/titanloom/attendance` | `apps/web/src/domains/attendance` | M2；M5 阶段二 |
