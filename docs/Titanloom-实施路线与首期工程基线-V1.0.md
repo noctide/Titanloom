@@ -148,7 +148,7 @@ M0 同时建立：前端体积预算与 CI 检查、Playwright 性能追踪脚�
 
 | 序号 | 任务 | 产出 | 完成标准 |
 | --- | --- | --- | --- |
-| 1 | 建私有仓库：放入 LICENSE、NOTICE、CONTRIBUTING、SPDX 约定；设 `.gitignore`、提交规范、分支保护；配置提交者署名；接入密钥扫描（提交前与 CI 各一次） | 仓库骨架 | 首次提交通过密钥扫描；历史中无主机地址、口令、私钥 |
+| 1 | 仓库收尾（仓库已公开，LICENSE、NOTICE、CONTRIBUTING、SPDX 约定、`.gitignore`、DCO 检查、托管平台密钥扫描与推送保护已就位，2026-10-16 核对）：补 `main` 分支保护（必需检查）、提交前密钥扫描 | 仓库设置与 pre-commit 配置 | 必需检查不过不能合并；提交前与 CI 各扫一次密钥；历史中无主机地址、口令、私钥 |
 | 2 | 仓库布局：单仓，`apps/api`（FastAPI）、`apps/web`（React + TypeScript + Vite）、`packages/contracts`（迁入 titanloom-contracts）、`docs`、`ops` | 目录与 README | 新克隆后按 README 能在开发机启动空应用 |
 | 3 | 开发机工具链：uv 管理 Python 3.12.10 独立环境、pnpm 与 Node 22 LTS、锁文件入库 | uv.lock、pnpm-lock.yaml | 干净环境一条命令完成依赖安装 |
 | 4 | CI：按《Titanloom-工程质量与代码规范》第 9 节门禁清单建立，含 ruff、类型检查（Python 与 TypeScript）、pytest、vitest、全部契约测试文件、Alembic 迁移检查、密钥扫描、依赖许可证清单（先出报告，不拦截） | CI 配置 | 干净环境可重复通过；故意引入凭据时被拦截 |

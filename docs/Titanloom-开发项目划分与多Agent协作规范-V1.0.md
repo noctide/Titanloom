@@ -69,7 +69,7 @@ flowchart TB
 | --- | --- | --- | --- | --- | --- |
 | ops 工程基础 | 实施路线 5.3、工程质量规范、部署拓扑 | 仓库骨架、工具链、CI 与门禁、合成数据生成器、性能脚手架、部署与恢复脚本、本文清单文件 | `ops/`、`.github/`、根配置 | 前端工具链配置 | M0；M4 基准与恢复 |
 | contracts 契约 | 能力契约 3、12 与各方案中的契约 | JSON Schema、OpenAPI、状态机、错误码注册表及其 `errors` 文案键、事件信封、SDK 生成 | `packages/contracts`、`packages/sdk-*` | — | M0 起持续 |
-| access 身份与授权 | 能力契约 5；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 | Principal / Group / ServicePrincipal、Person / Employment / SourceIdentity、Workspace / BusinessProject、角色与绑定、策略版本、委托、Agent 运行端、三道门与授权判定 | `apps/api/titanloom/access` | — | M1 |
+| access 身份与授权 | 能力契约 5；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 | Principal / Group / ServicePrincipal、Person / Employment / SourceIdentity、Workspace / DepartmentSpace（部门空间，跟人事系统）/ BusinessProject（跨部门项目）、功能开放（后台治理 4.6）、角色与绑定、策略版本、委托、Agent 运行端、三道门与授权判定 | `apps/api/titanloom/access` | — | M1 |
 | execution 命令与执行 | 能力契约 3、6、7、8、13、14；总框架 12.4、13 | 能力目录、命令、确认、调用、幂等记录、outbox、JobRun / JobAttempt、有界本地 Runner、控制服务（调度、分派、租约与核对） | `apps/api/titanloom/execution` | — | M1 |
 | facilities 资产·审计·通知 | 总框架 8.7、9；能力契约 9.4；后台治理 11.1、11.3、12.2；国际化规范 | Asset 服务（稳定 ID、版本、派生规格、访问授权）、AuditEvent、Notification 与待办投递、语言资源服务（文案、语言包、术语表、默认文案导入、服务端渲染适配层） | `apps/api/titanloom/facilities` | — | M1；通知 M4 |
 | plugin-host 插件宿主 | 插件与扩展体系；总框架 8.6 | 清单与签名校验、Contribution / Binding / Host、服务契约与组合版本、运行实例生命周期、宿主 SDK；隔离宿主（G-ISO） | `apps/api/titanloom/plugin_host`、`packages/host-sdk` | — | M1 阶段 A；M2–M3 B1；M6 B2、C |
