@@ -73,7 +73,7 @@ flowchart TB
 | execution 命令与执行 | 能力契约 3、6、7、8、13、14；总框架 12.4、13 | 能力目录、命令、确认、调用、幂等记录、outbox、JobRun / JobAttempt、有界本地 Runner、控制服务（调度、分派、租约与核对） | `apps/api/titanloom/execution` | — | M1 |
 | facilities 资产·审计·通知 | 总框架 8.7、9；能力契约 9.4；后台治理 11.1、11.3、12.2；国际化规范 | Asset 服务（稳定 ID、版本、派生规格、访问授权）、AuditEvent、Notification 与待办投递、语言资源服务（文案、语言包、术语表、默认文案导入、服务端渲染适配层） | `apps/api/titanloom/facilities` | — | M1；通知 M4 |
 | plugin-host 插件宿主 | 插件与扩展体系；总框架 8.6 | 清单与签名校验、Contribution / Binding / Host、服务契约与组合版本、运行实例生命周期、宿主 SDK；隔离宿主（G-ISO） | `apps/api/titanloom/plugin_host`、`packages/host-sdk` | — | M1 阶段 A；M2–M3 B1；M6 B2、C |
-| shell 门户与工作台 | Shell 与门户及个人工作台 | 导航（含移动端）、资源路由、ShellContext、WorkspacePage / Version、全平台待办（悬浮球快捷圈与待办抽屉）、选取（9.6）、范围菜单（部门空间 / 跨部门项目）、"我发起的"与搜索入口、工作台默认卡片、快捷导航与首页卡片、公告与阅读回执、客服入口与全局反馈、统一报错卡、页面默认可读视图与页面动作宿主（选取器、看得见的手）、启动体验与首页宣传轮播；前端应用框架与公共 UI 组件；`common` 命名空间文案 | `apps/api/titanloom/shell` | `apps/web/src/shell`、`apps/web/src/shared` | M1 A1；M4 A2；M6 B–C |
+| shell 门户与工作台 | Shell 与门户及个人工作台 | 导航（含移动端）、资源路由、ShellContext、WorkspacePage / Version、全平台待办（悬浮球快捷圈与待办抽屉）、选取（Shell 9.6）、范围菜单（部门空间 / 跨部门项目）、"我发起的"与搜索入口、工作台默认卡片、快捷导航与首页卡片、公告与阅读回执、客服入口与全局反馈、统一报错卡、页面默认可读视图与页面动作宿主（选取器、看得见的手）、启动体验与首页宣传轮播；前端应用框架与公共 UI 组件；`common` 命名空间文案 | `apps/api/titanloom/shell` | `apps/web/src/shell`、`apps/web/src/shared` | M1 A1；M4 A2；M6 B–C |
 | admin 后台治理 | 后台治理中心 | 治理投影、配置修订与激活、配额与预留、依赖图与运行图、权限诊断、平台告警、备份恢复入口、集成中心页面承载、业务参数页（ADR-022）、语言与术语页、反馈与工单处理页 | `apps/api/titanloom/admin` | `apps/web/src/domains/admin` | M0 P0；M1 P1；M4 P2–P3 |
 | integration 集成与消息通道 | 集成与消息通道 | ChannelConnection、DeliveryRoute、模板、投递记录、InboundEndpoint / InboundRoute、出网守卫、SecretRef 最小集 | `apps/api/titanloom/integration` | `apps/web/src/domains/integration` | M4 出站；M5 入站 |
 | forms 表单平台 | 表单平台 | RecordType、BusinessRecord / RecordRevision、导入、WorkflowInstance / HumanTask、L0 表单运行 | `apps/api/titanloom/forms` | `apps/web/src/domains/forms` | M2；M5 阶段二 |
@@ -205,6 +205,7 @@ sequenceDiagram
 5.  **质量**：符合工程质量规范第 4 节编码规则与第 6 节完成的定义。
 6.  **可维护性**：命名表达领域语义；没有重复实现公共能力；没有为未来需求预先堆砌的抽象；复杂处有说明。
 7.  **安全**：没有秘密与不必要的业务明细进入日志；G-ISO 前没有执行用户代码的路径；出网与入站经守卫。
+8.  **公共约定**：新入口登记了功能、可调数值登记为业务参数（没有写死）、新页面声明了可读视图与动作、用的是 Shell 公共组件、过了可访问性与 390 宽检查（工程质量规范 4.4）。
 
 审核意见必须引用具体文件位置与设计章节；"感觉不好"不是有效意见。
 
