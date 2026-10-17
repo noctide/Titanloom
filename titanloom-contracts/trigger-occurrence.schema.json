@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/trigger-occurrence/0.1",
+  "title": "TriggerOccurrence（计划时刻）",
+  "description": "来源：后端详细设计·命令与任务 H。每条规则每个计划时刻至多一条（ruleId + plannedAt 唯一），记录放没放任务；错过与跳过也记账。",
+  "type": "object",
+  "required": [
+    "ruleId",
+    "plannedAt",
+    "state",
+    "recordedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "ruleId": {
+      "type": "string"
+    },
+    "plannedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "state": {
+      "enum": [
+        "placed",
+        "missed",
+        "skipped_overlap",
+        "caught_up"
+      ]
+    },
+    "jobId": {
+      "type": "string"
+    },
+    "reasonKey": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+    },
+    "recordedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "placed",
+              "caught_up"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "jobId"
+        ]
+      },
+      "else": {
+        "required": [
+          "reasonKey"
+        ],
+        "not": {
+          "required": [
+            "jobId"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/execution-binding/0.1",
+  "title": "ExecutionBinding（能力的执行登记）",
+  "description": "来源：后端详细设计·命令与任务 K、L2、L3、L4；能力契约 3.5、8。模块启动时为每个能力登记执行方式：同步或后台、轻道或重道、是否要确认、最长运行、重试策略、可否取消、核对窗口。重道必须后台执行；不确定副作用不得自动重试。",
+  "type": "object",
+  "required": [
+    "capabilityId",
+    "contractVersion",
+    "module",
+    "mode",
+    "confirmPolicy",
+    "maxRunSec",
+    "retry",
+    "cancellable"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "capabilityId": {
+      "type": "string",
+      "pattern": "^titanloom\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+    },
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "mode": {
+      "enum": [
+        "sync",
+        "async"
+      ]
+    },
+    "lane": {
+      "enum": [
+        "light",
+        "heavy"
+      ]
+    },
+    "confirmPolicy": {
+      "enum": [
+        "auto",
+        "confirm"
+      ]
+    },
+    "maxRunSec": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    },
+    "retry": {
+      "type": "object",
+      "required": [
+        "maxAttempts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "backoffSec": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxItems": 9
+        },
+        "jitter": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.5
+        },
+        "retryOn": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "transient",
+              "dependency_unavailable",
+              "rate_limited",
+              "timeout_before_effect"
+            ]
+          }
+        }
+      }
+    },
+    "cancellable": {
+      "type": "boolean"
+    },
+    "reconcile": {
+      "type": "object",
+      "required": [
+        "autoWindowMin"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "autoWindowMin": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        },
+        "intervalSec": {
+          "type": "integer",
+          "minimum": 10
+        }
+      }
+    },
+    "validatorRef": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "async"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "lane"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "lane"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lane": {
+            "const": "heavy"
+          }
+        },
+        "required": [
+          "lane"
+        ]
+      },
+      "then": {
+        "properties": {
+          "mode": {
+            "const": "async"
+          }
+        }
+      }
+    }
+  ]
+}

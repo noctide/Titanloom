@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/reconcile-case/0.1",
+  "title": "ReconcileCase（待核对）",
+  "description": "来源：后端详细设计·命令与任务 F、L3；后台治理 9.4；能力契约 7.3、8.3。副作用不确定时开立；先自动核对至 autoUntil，仍不清转人工；人工结论只有四种且必须附证据，由领域确认落地；没有直接标成功。",
+  "type": "object",
+  "required": [
+    "caseId",
+    "jobId",
+    "openedAt",
+    "autoUntil",
+    "state"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "caseId": {
+      "type": "string"
+    },
+    "jobId": {
+      "type": "string"
+    },
+    "openedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "autoUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "enum": [
+        "auto_checking",
+        "awaiting_human",
+        "concluded"
+      ]
+    },
+    "conclusion": {
+      "enum": [
+        "done",
+        "not_done",
+        "partial",
+        "unknown"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "peer_query",
+              "delivery_receipt",
+              "log",
+              "human_note"
+            ]
+          },
+          "ref": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      }
+    },
+    "decidedBy": {
+      "type": "string"
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "domainCommandRef": {
+      "type": "string"
+    },
+    "escalatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "concluded"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "conclusion",
+          "decidedBy",
+          "decidedAt",
+          "evidence"
+        ],
+        "properties": {
+          "evidence": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "conclusion": {
+            "enum": [
+              "done",
+              "not_done",
+              "partial"
+            ]
+          }
+        },
+        "required": [
+          "conclusion"
+        ]
+      },
+      "then": {
+        "required": [
+          "domainCommandRef"
+        ]
+      },
+      "description": "结论由领域命令落地，不直接改状态"
+    }
+  ]
+}
