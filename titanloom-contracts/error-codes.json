@@ -261,6 +261,33 @@
       "status": "proposed",
       "source": "集成与消息通道 8",
       "messageKey": "errors:channelDisabled"
+    },
+    {
+      "code": "ACCOUNT_LOCKED",
+      "httpStatus": 423,
+      "retryable": false,
+      "recoveryAction": "wait_and_retry",
+      "status": "proposed",
+      "source": "身份与权限 D：连续输错锁定",
+      "messageKey": "errors:accountLocked"
+    },
+    {
+      "code": "FEATURE_NOT_OPEN",
+      "httpStatus": 403,
+      "retryable": false,
+      "recoveryAction": "request_access",
+      "status": "proposed",
+      "source": "后台治理 4.6：功能开放未给到",
+      "messageKey": "errors:featureNotOpen"
+    },
+    {
+      "code": "SECOND_APPROVAL_REQUIRED",
+      "httpStatus": 409,
+      "retryable": false,
+      "recoveryAction": "await_approval",
+      "status": "proposed",
+      "source": "后台治理 6.4：往松了改要第二位管理员",
+      "messageKey": "errors:secondApprovalRequired"
     }
   ]
 }

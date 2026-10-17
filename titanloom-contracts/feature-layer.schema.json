@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/feature-layer/0.1",
+  "title": "FeatureLayer（部门 / 项目收紧功能开放）",
+  "description": "来源：后台治理 4.6、ADR-025、后端详细设计·身份与权限 G。只能往紧了收：follow=跟平台，only=只给所列部门 / 项目角色，off=关掉。平台档位本身不另存（存为授权）。",
+  "type": "object",
+  "required": [
+    "scopeKind",
+    "scopeId",
+    "featureId",
+    "mode",
+    "reason",
+    "changedBy",
+    "changedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "scopeKind": {
+      "enum": [
+        "dept",
+        "project"
+      ]
+    },
+    "scopeId": {
+      "type": "string"
+    },
+    "featureId": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9]*\\.[a-z][a-zA-Z0-9]*$"
+    },
+    "mode": {
+      "enum": [
+        "follow",
+        "only",
+        "off"
+      ]
+    },
+    "onlyRoles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "changedBy": {
+      "type": "string"
+    },
+    "changedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "only"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "onlyRoles"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "onlyRoles"
+          ]
+        }
+      }
+    }
+  ]
+}

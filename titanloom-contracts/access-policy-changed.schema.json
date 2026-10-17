@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/access-policy-changed/0.1",
+  "title": "access.policy.changed 事件载荷",
+  "description": "来源：后端详细设计·身份与权限 H、K4。任何影响判定的写入在同一事务内把权限版本号 +1 并发出本事件；订阅方丢弃受影响主体的缓存，处理后回报 propagation_ack。最长传播时间为部署参数（默认 60 秒）。",
+  "type": "object",
+  "required": [
+    "rev",
+    "cause",
+    "changedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rev": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "cause": {
+      "enum": [
+        "grant",
+        "role_publish",
+        "group_member",
+        "org",
+        "employment",
+        "account_status",
+        "agent_gate",
+        "feature",
+        "delegation"
+      ]
+    },
+    "causeRef": {
+      "type": "string"
+    },
+    "affectedPrincipals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 5000
+    },
+    "all": {
+      "const": true
+    },
+    "changedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "affectedPrincipals"
+      ],
+      "not": {
+        "required": [
+          "all"
+        ]
+      }
+    },
+    {
+      "required": [
+        "all"
+      ],
+      "not": {
+        "required": [
+          "affectedPrincipals"
+        ]
+      }
+    }
+  ]
+}

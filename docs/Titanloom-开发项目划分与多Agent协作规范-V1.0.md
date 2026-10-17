@@ -1,7 +1,7 @@
 # Titanloom · 开发项目划分与多 Agent 协作规范
 
 > 版本：V1.0｜日期：2026-10-03｜修订：2026-10-04 forms 项目显示名改为表单平台（key 不变）；shell 增公告与移动端导航，admin 增业务参数页；2026-10-05 shell 增工作台默认卡片与"我发起的"聚合；2026-10-06 shell 增全局悬浮窗与待办抽屉、客服、全局反馈、快捷导航与首页卡片，admin 增反馈与工单处理页；同日 agent 增钉子、报错分析与会话记录，shell 增默认可读视图、页面动作宿主与统一报错卡｜状态：公共平台规范，随 M0 生效；项目清单与读取清单在 M0 落成仓库中的清单文件与各项目 Agent 说明。
-> 修订：2026-10-17 4.1 共同必读加《后端详细设计 · 总图》；2026-10-16 shell 项目范围补快捷圈、选取、范围菜单；新增 5.4 执行 Agent 与交付方式（opencode / Codex / DeepSeek Harness 参与，AGENTS.md 唯一正本，独立 worktree，架构审核后上传合并）；后端工作包须引用已定稿的后端详细设计。
+> 修订：2026-10-17 4.1 共同必读加《后端详细设计 · 总图》；access 项目依据与必读加《后端详细设计 · 身份与权限》；2026-10-16 shell 项目范围补快捷圈、选取、范围菜单；新增 5.4 执行 Agent 与交付方式（opencode / Codex / DeepSeek Harness 参与，AGENTS.md 唯一正本，独立 worktree，架构审核后上传合并）；后端工作包须引用已定稿的后端详细设计。
 > 定位：规定开发工作如何按子方案拆成开发项目、每个项目的执行 Agent 读什么、能改什么，以及"架构设计 → Agent 执行 → 审核"的流程。本文不改变运行时架构：系统仍是总框架规定的模块化单体，项目划分只是开发分工；模块边界、对象 Owner 与公共契约以总框架、能力契约和各子方案为准。
 > 依据：总框架 4、5、8.1、14；能力契约 2、13；实施路线 3、5；《Titanloom-工程质量与代码规范》；ADR-020。
 
@@ -69,7 +69,7 @@ flowchart TB
 | --- | --- | --- | --- | --- | --- |
 | ops 工程基础 | 实施路线 5.3、工程质量规范、部署拓扑 | 仓库骨架、工具链、CI 与门禁、合成数据生成器、性能脚手架、部署与恢复脚本、本文清单文件 | `ops/`、`.github/`、根配置 | 前端工具链配置 | M0；M4 基准与恢复 |
 | contracts 契约 | 能力契约 3、12 与各方案中的契约 | JSON Schema、OpenAPI、状态机、错误码注册表及其 `errors` 文案键、事件信封、SDK 生成 | `packages/contracts`、`packages/sdk-*` | — | M0 起持续 |
-| access 身份与授权 | 能力契约 5；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 | Principal / Group / ServicePrincipal、Person / Employment / SourceIdentity、Workspace / DepartmentSpace（部门空间，跟人事系统）/ BusinessProject（跨部门项目）、功能开放（后台治理 4.6）、角色与绑定、策略版本、委托、Agent 运行端、三道门与授权判定 | `apps/api/titanloom/access` | — | M1 |
+| access 身份与授权 | 后端详细设计 · 身份与权限；能力契约 5；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 | Principal / Group / ServicePrincipal、Person / Employment / SourceIdentity、Workspace / DepartmentSpace（部门空间，跟人事系统）/ BusinessProject（跨部门项目）、功能开放（后台治理 4.6）、角色与绑定、策略版本、委托、Agent 运行端、三道门与授权判定 | `apps/api/titanloom/access` | — | M1 |
 | execution 命令与执行 | 能力契约 3、6、7、8、13、14；总框架 12.4、13 | 能力目录、命令、确认、调用、幂等记录、outbox、JobRun / JobAttempt、有界本地 Runner、控制服务（调度、分派、租约与核对） | `apps/api/titanloom/execution` | — | M1 |
 | facilities 资产·审计·通知 | 总框架 8.7、9；能力契约 9.4；后台治理 11.1、11.3、12.2；国际化规范 | Asset 服务（稳定 ID、版本、派生规格、访问授权）、AuditEvent、Notification 与待办投递、语言资源服务（文案、语言包、术语表、默认文案导入、服务端渲染适配层） | `apps/api/titanloom/facilities` | — | M1；通知 M4 |
 | plugin-host 插件宿主 | 插件与扩展体系；总框架 8.6 | 清单与签名校验、Contribution / Binding / Host、服务契约与组合版本、运行实例生命周期、宿主 SDK；隔离宿主（G-ISO） | `apps/api/titanloom/plugin_host`、`packages/host-sdk` | — | M1 阶段 A；M2–M3 B1；M6 B2、C |
@@ -119,7 +119,7 @@ flowchart TB
 | --- | --- | --- |
 | ops | 实施路线全文、部署拓扑全文 | 总框架 12；开源与第三方依赖治理 |
 | contracts | 能力契约全文 | 总框架 8.2–8.3、13.1；各方案中被登记为契约的章节（按工作包） |
-| access | — | 能力契约 5、6.4；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 |
+| access | 后端详细设计 · 身份与权限（全文） | 能力契约 5、6.4；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 |
 | execution | — | 能力契约 6、7、8、13、14；总框架 12.4、13；部署 4 |
 | facilities | — | 能力契约 9.4；总框架 8.7、9；后台治理 11.1、11.3、12.2 |
 | plugin-host | 插件与扩展体系全文 | 总框架 8.6；ADR-013、ADR-016 |
@@ -237,7 +237,7 @@ contracts:
   read: [平台能力契约与Agent接入规范, 总框架#8.2, 总框架#8.3, 总框架#13.1]
 access:
   paths: [apps/api/titanloom/access/, i18n/access.yaml]
-  read: [平台能力契约#5, 平台能力契约#6.4, 总框架#3.1, 总框架#3.1.1, 总框架#8.5, 后台治理#4, 后台治理#5.1]
+  read: [后端详细设计-身份与权限, 平台能力契约#5, 平台能力契约#6.4, 总框架#3.1, 总框架#3.1.1, 总框架#8.5, 后台治理#4, 后台治理#5.1]
 execution:
   paths: [apps/api/titanloom/execution/, i18n/execution.yaml]
   read: [平台能力契约#6, 平台能力契约#7, 平台能力契约#8, 平台能力契约#13, 平台能力契约#14, 总框架#12.4, 总框架#13, 部署拓扑#4]
