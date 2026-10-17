@@ -1,7 +1,7 @@
 # Titanloom · 平台能力契约与 Agent 接入规范
 
 > 版本：V1.0｜设计日期：2026-09-26｜修订日期：2026-10-03｜状态：详细设计稿，可用于接口拆解与工程评审；未实现、未验收。
-> 修订：2026-10-01 全文档边界统一，平台运行告警改由 PlatformAlertRule / PlatformAlertInstance 管理、业务告警归所属领域（18，ADR-009）；不再预设公共 ContributionEvent / Contribution Graph 服务（18，ADR-010）；2026-10-03 9.1 Query 请求新增按 FieldRef 的 filters，响应新增 dataGeneration 与列 fieldRef（数据处理 12.6，拟定）；2026-10-03 通读 9.3–11、16：10.3 注明 WAIT_TIMEOUT 为 CLI 本地结果码，16 新增 A29（按 FieldRef 筛选）与 A30（数据代次）验收用例；2026-10-03 6.2 与 12.1 示例的 messageKey 改为国际化规范的键名格式。
+> 修订：2026-10-17 新增 9.5 全局搜索提供方（SearchProvider，ADR-026）；2026-10-01 全文档边界统一，平台运行告警改由 PlatformAlertRule / PlatformAlertInstance 管理、业务告警归所属领域（18，ADR-009）；不再预设公共 ContributionEvent / Contribution Graph 服务（18，ADR-010）；2026-10-03 9.1 Query 请求新增按 FieldRef 的 filters，响应新增 dataGeneration 与列 fieldRef（数据处理 12.6，拟定）；2026-10-03 通读 9.3–11、16：10.3 注明 WAIT_TIMEOUT 为 CLI 本地结果码，16 新增 A29（按 FieldRef 筛选）与 A30（数据代次）验收用例；2026-10-03 6.2 与 12.1 示例的 messageKey 改为国际化规范的键名格式。
 > 项目定位：面向大型企业场景设计的开源项目；本文不表示任何组织已立项、授权部署或已交付。实际接入企业数据须遵守使用方的授权与数据规则。
 > 文档定位：总框架的公共工程配套规范，不新增业务能力域，不替代各领域子方案或公共平台能力方案。
 > 权威依据：《Titanloom-总框架设计方案-V1.0.md》及其现行同步基线；本规范负责
@@ -880,6 +880,15 @@ Agent。对外部运行端的数据边界承诺依赖受信运行端与部署治
 URL 作为权限系统。签名 URL
 在有效期内可能被转发，强撤权要求使用可在线校验的资产代理或等价机制，不能宣称已签发
 URL 必然即时失效。
+
+### 9.5 全局搜索提供方
+
+全局搜索（Shell 9.7）不直接读各模块的表。每个模块实现 SearchProvider（契约 search-provider.schema.json）：
+
+-   **登记**：哪些对象类型可被搜到（所属分组、名称文案键）、哪些操作可从搜索直接发起（文案键、站内路由、关键词、需要的功能或能力）；敏感字段不得进入索引。
+-   **索引**：对象新建、改名、删除、换权限时发 outbox 事件，后台轻道几秒内更新 `search.search_doc`（契约 search-doc.schema.json），每晚全量对账；索引只存名称、别名、拼音与不超过 500 字的摘要，不是任何数据的正本，可由各模块重建。
+-   **复核**：每个提供方提供 `check_visible` 能力；查询先按归属范围过滤，打分后前 50 条交所属模块复核，不返回被过滤的数量。点击结果和发起操作照常走第 5 节裁决。
+-   **替换**：首期实现为 PostgreSQL（《后端详细设计 · 总图》9）；将来换专门搜索程序时 SearchProvider 与查询接口不变。语义检索沿用知识方案的 RetrievalProvider，首期不接入全局搜索。
 
 ## 10. API / SDK / CLI 接入约定
 

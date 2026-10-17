@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/search-doc/0.1",
+  "title": "SearchDoc（全局搜索索引条目）",
+  "description": "来源：后端详细设计·总图 9、Shell 9.7。search.search_doc 的一行；索引不是正本，可由各模块 SearchProvider 重建。只存名称、别名、拼音与不超过 500 字的摘要，不存正文与敏感字段；可见性只存摘要，命中后仍由所属模块 check_visible 复核。",
+  "type": "object",
+  "required": [
+    "objectType",
+    "objectId",
+    "module",
+    "scopeKind",
+    "visibility",
+    "titleZh",
+    "titleEn",
+    "pinyinFull",
+    "pinyinInitials",
+    "updatedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "objectType": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-zA-Z0-9]*$",
+      "description": "<模块>.<对象>，如 forms.form"
+    },
+    "objectId": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "scopeKind": {
+      "enum": [
+        "dept",
+        "project",
+        "personal",
+        "platform"
+      ]
+    },
+    "scopeId": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "scope_members",
+            "grantees",
+            "owner_only",
+            "feature_holders"
+          ]
+        },
+        "principalSetRef": {
+          "type": "string",
+          "description": "授权人员集合的引用，不内联名单"
+        },
+        "featureId": {
+          "type": "string"
+        }
+      }
+    },
+    "titleZh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "titleEn": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50
+    },
+    "pinyinFull": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 8,
+      "description": "多音字组合上限 8 种"
+    },
+    "pinyinInitials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 8
+    },
+    "excerpt": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "boost": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "scopeKind": {
+            "enum": [
+              "dept",
+              "project"
+            ]
+          }
+        },
+        "required": [
+          "scopeKind"
+        ]
+      },
+      "then": {
+        "required": [
+          "scopeId"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "visibility": {
+            "properties": {
+              "mode": {
+                "const": "grantees"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        "required": [
+          "visibility"
+        ]
+      },
+      "then": {
+        "properties": {
+          "visibility": {
+            "required": [
+              "principalSetRef"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "visibility": {
+            "properties": {
+              "mode": {
+                "const": "feature_holders"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        "required": [
+          "visibility"
+        ]
+      },
+      "then": {
+        "properties": {
+          "visibility": {
+            "required": [
+              "featureId"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
