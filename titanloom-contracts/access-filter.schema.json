@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/access-filter/0.1",
+  "title": "AccessFilter（能看哪些）",
+  "description": "来源：后端详细设计·身份与权限 F、K2。返回结构化谓词，由调用模块 store 层翻译为参数化查询；不返回 SQL 字符串。all=不限；none=一条都不能看；否则 any 为允许条件之并，not 为显式拒绝之并，maskColumns 为须遮挡的列。",
+  "type": "object",
+  "required": [
+    "policyRev"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "policyRev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "all": {
+      "const": true
+    },
+    "none": {
+      "const": true
+    },
+    "any": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "op",
+          "values"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9]*$"
+          },
+          "op": {
+            "enum": [
+              "in",
+              "eq"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "not": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "op",
+          "values"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9]*$"
+          },
+          "op": {
+            "enum": [
+              "in",
+              "eq"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "maskColumns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "all"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "none"
+            ]
+          },
+          {
+            "required": [
+              "any"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "required": [
+        "none"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "all"
+            ]
+          },
+          {
+            "required": [
+              "any"
+            ]
+          },
+          {
+            "required": [
+              "not"
+            ]
+          },
+          {
+            "required": [
+              "maskColumns"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "required": [
+        "any"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "all"
+            ]
+          },
+          {
+            "required": [
+              "none"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/access-decision/0.1",
+  "title": "AccessDecision（能不能 / 为什么）",
+  "description": "来源：后端详细设计·身份与权限 E、J；后台治理 4.3。判定按 identity → feature → grant → agent_gate → data_scope → state 顺序，一关不过即停，后续关为 not_checked。原因只给文案键与参数，不含调用者看不到的对象名称与数量；不返回策略原文。",
+  "type": "object",
+  "required": [
+    "decision",
+    "policyRev",
+    "decidedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "decision": {
+      "enum": [
+        "allow",
+        "deny"
+      ]
+    },
+    "policyRev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "failedStep": {
+      "enum": [
+        "identity",
+        "feature",
+        "grant",
+        "agent_gate",
+        "data_scope",
+        "state"
+      ]
+    },
+    "reasonKey": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+    },
+    "reasonParams": {
+      "type": "object"
+    },
+    "contactRef": {
+      "type": "string",
+      "description": "找谁：可见时为人员或角色引用"
+    },
+    "canRequest": {
+      "type": "boolean"
+    },
+    "matchedGrantRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "step",
+          "result"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "step": {
+            "enum": [
+              "identity",
+              "feature",
+              "grant",
+              "agent_gate",
+              "data_scope",
+              "state"
+            ]
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "fail",
+              "not_checked",
+              "not_applicable"
+            ]
+          },
+          "reasonKey": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+          },
+          "reasonParams": {
+            "type": "object"
+          },
+          "grantRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "deny"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "failedStep",
+          "reasonKey"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "allow"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "failedStep"
+              ]
+            },
+            {
+              "required": [
+                "canRequest"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

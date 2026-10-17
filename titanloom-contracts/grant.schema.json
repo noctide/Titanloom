@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/grant/0.1",
+  "title": "Grant（授权）",
+  "description": "来源：后端详细设计·身份与权限 G、K1–K3；总框架 8.5.3；后台治理 4.5。一行读作：谁 · 在哪 · 角色或单项能力 · 哪些数据 · 到什么时候 · 允许或拒绝。单个资源的共享与管家三门也是本表的行（scopeKind=resource）。数据条件只能用登记的几种，不接受自由公式。",
+  "type": "object",
+  "required": [
+    "grantId",
+    "subjectKind",
+    "subjectId",
+    "scopeKind",
+    "effect",
+    "source",
+    "grantedBy",
+    "validFrom"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "grantId": {
+      "type": "string"
+    },
+    "subjectKind": {
+      "enum": [
+        "account",
+        "service",
+        "group",
+        "dept",
+        "project_role",
+        "agent"
+      ]
+    },
+    "subjectId": {
+      "type": "string"
+    },
+    "includeSubDepts": {
+      "type": "boolean",
+      "description": "subjectKind=dept 时是否含下级部门"
+    },
+    "scopeKind": {
+      "enum": [
+        "platform",
+        "dept",
+        "project",
+        "resource"
+      ]
+    },
+    "scopeId": {
+      "type": "string"
+    },
+    "resourceRef": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-zA-Z0-9]*:.+$",
+      "description": "<模块>.<对象>:<id>"
+    },
+    "roleId": {
+      "type": "string"
+    },
+    "capabilityId": {
+      "type": "string",
+      "pattern": "^titanloom\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+    },
+    "dataCondition": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "self",
+            "own_dept",
+            "depts",
+            "projects",
+            "field_own_dept",
+            "all"
+          ]
+        },
+        "includeSub": {
+          "type": "boolean"
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "field": {
+          "type": "string",
+          "pattern": "^[a-z][a-zA-Z0-9]*$",
+          "description": "模块登记过的权限字段"
+        },
+        "maskColumns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "depts",
+                  "projects"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "ids"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "field_own_dept"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "field"
+            ]
+          }
+        }
+      ]
+    },
+    "effect": {
+      "enum": [
+        "allow",
+        "deny"
+      ]
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validTo": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "enum": [
+        "manual",
+        "request",
+        "feature",
+        "hr_rule",
+        "bootstrap"
+      ]
+    },
+    "requestRef": {
+      "type": "string"
+    },
+    "grantedBy": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "oneOf": [
+        {
+          "required": [
+            "roleId"
+          ],
+          "not": {
+            "required": [
+              "capabilityId"
+            ]
+          }
+        },
+        {
+          "required": [
+            "capabilityId"
+          ],
+          "not": {
+            "required": [
+              "roleId"
+            ]
+          }
+        }
+      ],
+      "description": "角色与单项能力二选一"
+    },
+    {
+      "if": {
+        "properties": {
+          "effect": {
+            "const": "deny"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "capabilityId"
+        ]
+      },
+      "description": "显式拒绝只针对单项能力"
+    },
+    {
+      "if": {
+        "properties": {
+          "scopeKind": {
+            "const": "resource"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "resourceRef"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scopeKind": {
+            "enum": [
+              "dept",
+              "project"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "scopeId"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subjectKind": {
+            "const": "agent"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "scopeKind": {
+            "const": "resource"
+          }
+        }
+      },
+      "description": "三门：管家只出现在资源准入行"
+    },
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "const": "request"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "requestRef",
+          "validTo"
+        ]
+      },
+      "description": "申请批准的授权必有期限"
+    }
+  ]
+}
