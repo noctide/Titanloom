@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/record-common/0.1",
+  "title": "RecordCommon（通用列）",
+  "description": "来源：后端详细设计·总图 6。每张业务表都有的通用列的对外表示；各对象 Schema 以 allOf 引用。id 为 UUIDv7（应用侧生成）；code 为给人看的短编号、可选；revision 为乐观锁；时间为 UTC；业务数据不直接删除，status 由各对象定义取值。",
+  "type": "object",
+  "required": [
+    "id",
+    "revision",
+    "createdAt",
+    "createdBy",
+    "updatedAt",
+    "updatedBy",
+    "status",
+    "scopeKind"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "description": "UUIDv7"
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,6}-[0-9]{3,8}$",
+      "description": "短编号，如 AU-0013"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "updatedBy": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scopeKind": {
+      "enum": [
+        "dept",
+        "project",
+        "personal"
+      ]
+    },
+    "scopeId": {
+      "type": "string"
+    }
+  },
+  "if": {
+    "properties": {
+      "scopeKind": {
+        "enum": [
+          "dept",
+          "project"
+        ]
+      }
+    },
+    "required": [
+      "scopeKind"
+    ]
+  },
+  "then": {
+    "required": [
+      "scopeId"
+    ]
+  }
+}

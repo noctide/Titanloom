@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/search-provider/0.1",
+  "title": "SearchProvider 登记",
+  "description": "来源：后端详细设计·总图 9、能力契约 9.5、Shell 9.7。模块登记哪些对象可被搜到、哪些操作可从搜索直接发起；必须提供 check_visible 复核能力；变更通过 outbox 事件更新索引并参与每晚对账。",
+  "type": "object",
+  "required": [
+    "module",
+    "objectTypes",
+    "checkVisibleCapability",
+    "reindexEvent"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "module": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "objectTypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "objectType",
+          "group",
+          "labelKey"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "objectType": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-zA-Z0-9]*$"
+          },
+          "group": {
+            "enum": [
+              "person",
+              "form",
+              "dashboard",
+              "data",
+              "document",
+              "automation",
+              "admin",
+              "other"
+            ]
+          },
+          "labelKey": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+          },
+          "sensitiveFieldsExcluded": {
+            "const": true
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "actionId",
+          "labelKey",
+          "route",
+          "keywords"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "actionId": {
+            "type": "string"
+          },
+          "labelKey": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+          },
+          "route": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "featureId": {
+            "type": "string",
+            "description": "需要功能开放时填写，无该功能的人不显示"
+          },
+          "capabilityId": {
+            "type": "string",
+            "pattern": "^titanloom\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "checkVisibleCapability": {
+      "type": "string",
+      "pattern": "^titanloom\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+    },
+    "reindexEvent": {
+      "type": "string",
+      "description": "outbox 事件类型，对象新建、改名、删除、换权限时发出"
+    },
+    "nightlyReconcile": {
+      "const": true
+    }
+  }
+}
