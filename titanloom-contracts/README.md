@@ -25,6 +25,7 @@
 | grant / access-decision / access-filter / feature-layer / access-policy-changed .schema.json | 身份与权限：授权（角色与单项能力二选一、拒绝只针对单项能力、数据条件白名单、申请批准必有期限、管家只在资源准入行）、判定结果（卡在哪一关、原因只给文案键）、筛选条件（结构化谓词，不返回 SQL）、部门 / 项目收紧（只能往紧）、权限变化事件（来源：后端详细设计·身份与权限，ADR-027） |
 | execution-binding / schedule-rule / trigger-occurrence / reconcile-case .schema.json | 命令与任务：能力执行登记（重道必须后台、不确定副作用不在可重试原因里）、定时规则（IANA 时区、补跑必须有上限、必须声明重叠策略）、计划时刻（UTC、错过与跳过记原因）、待核对（结论四种、必须附证据并经领域命令落地）（来源：后端详细设计·命令与任务，ADR-028） |
 | asset-version / asset-ref / notification / notify-pref / todo-item .schema.json | 公共设施：文件版本（不暴露路径、检查未过不可用、首期 virusScan=not_performed）、文件引用（按引用鉴权）、站内通知（只站内链接、无业务明细、记语言包版本）、个人通知设置（必读 / 审批 / 账户安全不能关）、待办副本（组待办先办先得）；audit-event 加指纹链（来源：后端详细设计·公共设施，ADR-029） |
-| test_contracts.py、test_contracts_part2.py … test_contracts_part11.py | 校验示例、负例与状态机一致性；`pip install jsonschema` 后分别运行 |
+| plugin-manifest / composition-version / shell-me / resource-resolve / plugin-health .schema.json | M1 外壳：插件清单（清单外登记被拒、底座不可卸载、排空上限 600 秒、皮肤包不提供服务）、组合版本（底座必须启用、记上一版可回退）、我的外壳（入口不可用只标不藏、角标来源不可用为空）、稳定链接解析（链接不含部门、无权结果不泄露名称）、插件健康（连续 3 次才标不可用）（来源：后端详细设计·插件宿主 · Shell · 平台管理（M1），ADR-030） |
+| test_contracts.py、test_contracts_part2.py … test_contracts_part12.py | 校验示例、负例与状态机一致性；`pip install jsonschema` 后分别运行 |
 
 集成通道的 channel-connection、delivery-route、inbound-endpoint 现使用 revisionState 与 operationalState 两个字段，不再使用单一 state。尚未覆盖：MessageTemplate、DeliveryRecord / Attempt、ExternalIdentityRef，以及各领域能力的 inputSchema / outputSchema。字段只取自规范已写明部分，未写明的（如事件类型清单、数据级别枚举的最终取值）属提案，待冻结。

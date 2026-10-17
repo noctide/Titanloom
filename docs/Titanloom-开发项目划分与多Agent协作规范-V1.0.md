@@ -1,7 +1,7 @@
 # Titanloom · 开发项目划分与多 Agent 协作规范
 
 > 版本：V1.0｜日期：2026-10-03｜修订：2026-10-04 forms 项目显示名改为表单平台（key 不变）；shell 增公告与移动端导航，admin 增业务参数页；2026-10-05 shell 增工作台默认卡片与"我发起的"聚合；2026-10-06 shell 增全局悬浮窗与待办抽屉、客服、全局反馈、快捷导航与首页卡片，admin 增反馈与工单处理页；同日 agent 增钉子、报错分析与会话记录，shell 增默认可读视图、页面动作宿主与统一报错卡｜状态：公共平台规范，随 M0 生效；项目清单与读取清单在 M0 落成仓库中的清单文件与各项目 Agent 说明。
-> 修订：2026-10-17 4.1 共同必读加《后端详细设计 · 总图》；access 项目依据与必读加《后端详细设计 · 身份与权限》、execution 加《后端详细设计 · 命令与任务》、facilities 加《后端详细设计 · 公共设施》；2026-10-16 shell 项目范围补快捷圈、选取、范围菜单；新增 5.4 执行 Agent 与交付方式（opencode / Codex / DeepSeek Harness 参与，AGENTS.md 唯一正本，独立 worktree，架构审核后上传合并）；后端工作包须引用已定稿的后端详细设计。
+> 修订：2026-10-17 4.1 共同必读加《后端详细设计 · 总图》；access 项目依据与必读加《后端详细设计 · 身份与权限》、execution 加《后端详细设计 · 命令与任务》、facilities 加《后端详细设计 · 公共设施》、plugin-host / shell / admin 加《后端详细设计 · 插件宿主 · Shell · 平台管理（M1）》；2026-10-16 shell 项目范围补快捷圈、选取、范围菜单；新增 5.4 执行 Agent 与交付方式（opencode / Codex / DeepSeek Harness 参与，AGENTS.md 唯一正本，独立 worktree，架构审核后上传合并）；后端工作包须引用已定稿的后端详细设计。
 > 定位：规定开发工作如何按子方案拆成开发项目、每个项目的执行 Agent 读什么、能改什么，以及"架构设计 → Agent 执行 → 审核"的流程。本文不改变运行时架构：系统仍是总框架规定的模块化单体，项目划分只是开发分工；模块边界、对象 Owner 与公共契约以总框架、能力契约和各子方案为准。
 > 依据：总框架 4、5、8.1、14；能力契约 2、13；实施路线 3、5；《Titanloom-工程质量与代码规范》；ADR-020。
 
@@ -122,9 +122,9 @@ flowchart TB
 | access | 后端详细设计 · 身份与权限（全文） | 能力契约 5、6.4；总框架 3.1、3.1.1、8.5；后台治理 4、5.1 |
 | execution | 后端详细设计 · 命令与任务（全文） | 能力契约 6、7、8、13、14；总框架 12.4、13；部署 4 |
 | facilities | 后端详细设计 · 公共设施（全文） | 能力契约 9.4；总框架 8.7、9；后台治理 11.1、11.3、12.2 |
-| plugin-host | 插件与扩展体系全文 | 总框架 8.6；ADR-013、ADR-016 |
-| shell | Shell 与门户及个人工作台全文 | 总框架 3、3.2、8.7；可视化 2.1（门户主页嵌入，按工作包） |
-| admin | 后台治理中心全文 | 能力契约 5、8；集成与消息通道 5（集成中心页面） |
+| plugin-host | 插件与扩展体系全文 ；后端详细设计 · 插件宿主 · Shell · 平台管理（M1） | 总框架 8.6；ADR-013、ADR-016 |
+| shell | Shell 与门户及个人工作台全文 ；后端详细设计 · 插件宿主 · Shell · 平台管理（M1） | 总框架 3、3.2、8.7；可视化 2.1（门户主页嵌入，按工作包） |
+| admin | 后台治理中心全文 ；后端详细设计 · 插件宿主 · Shell · 平台管理（M1） | 能力契约 5、8；集成与消息通道 5（集成中心页面） |
 | integration | 集成与消息通道全文 | 后台治理 7.2、10.3；能力契约 6 |
 | forms | 表单平台全文 | 能力契约 6、7；插件体系 2（宿主登记） |
 | attendance | 考勤签到全文 | 能力契约 6、7、8；总框架 8.7（时间口径） |
@@ -246,13 +246,13 @@ facilities:
   read: [后端详细设计-公共设施, 平台能力契约#9.4, 总框架#8.7, 总框架#9, 后台治理#11.1, 后台治理#11.3, 后台治理#12.2]
 plugin-host:
   paths: [apps/api/titanloom/plugin_host/, packages/host-sdk/, i18n/plugins.yaml]
-  read: [插件与扩展体系, 总框架#8.6, ADR-013, ADR-016]
+  read: [后端详细设计-插件宿主与Shell与平台管理-M1, 插件与扩展体系, 总框架#8.6, ADR-013, ADR-016]
 shell:
   paths: [apps/api/titanloom/shell/, apps/web/src/shell/, apps/web/src/shared/, i18n/common.yaml, i18n/shell.yaml]
-  read: [Shell与门户及个人工作台, 总框架#3, 总框架#8.7]
+  read: [后端详细设计-插件宿主与Shell与平台管理-M1, Shell与门户及个人工作台, 总框架#3, 总框架#8.7]
 admin:
   paths: [apps/api/titanloom/admin/, apps/web/src/domains/admin/, i18n/admin.yaml]
-  read: [后台治理中心, 平台能力契约#5, 平台能力契约#8, 集成与消息通道#5]
+  read: [后端详细设计-插件宿主与Shell与平台管理-M1, 后台治理中心, 平台能力契约#5, 平台能力契约#8, 集成与消息通道#5]
 integration:
   paths: [apps/api/titanloom/integration/, apps/web/src/domains/integration/, i18n/integration.yaml]
   read: [集成与消息通道, 后台治理#7.2, 后台治理#10.3, 平台能力契约#6]

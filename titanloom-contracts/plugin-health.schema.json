@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/plugin-health/0.1",
+  "title": "PluginHealth（插件健康）",
+  "description": "来源：后端详细设计·插件宿主 · Shell · 平台管理（M1）G、H6。三态；连续 3 次 down 才标不可用；原因只给文案键。",
+  "type": "object",
+  "required": [
+    "pluginId",
+    "status",
+    "checkedAt",
+    "consecutiveDown"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "pluginId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "degraded",
+        "down"
+      ]
+    },
+    "checkedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "latencyMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "consecutiveDown": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reasonKey": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+    },
+    "since": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "down"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "reasonKey",
+          "since"
+        ],
+        "properties": {
+          "consecutiveDown": {
+            "minimum": 3
+          }
+        }
+      }
+    }
+  ]
+}
