@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://titanloom.local/contracts/audit-event/0.1",
   "title": "AuditEvent (M0 draft)",
-  "description": "来源：后台治理 12.2、能力契约 13。前后值只存摘要，不存秘密与无必要业务数据；审计是证据不是控制入口。",
+  "description": "来源：后台治理 12.2、能力契约 13。前后值只存摘要，不存秘密与无必要业务数据；审计是证据不是控制入口。 2026-10-17：只追加，带指纹链 prevHash / hash（ADR-029）。",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -98,6 +98,16 @@
     },
     "evidenceRef": {
       "type": "string"
+    },
+    "prevHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "上一条审计的 hash（指纹链，后端详细设计·公共设施 C）"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256(prevHash ‖ 规范化本条)"
     }
   }
 }

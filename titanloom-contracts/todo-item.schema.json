@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/todo-item/0.1",
+  "title": "TodoItem（统一收件箱的展示副本）",
+  "description": "来源：后端详细设计·公共设施 E、I5；Shell 9。由所属模块事件维护，收件箱不判断完成；办理调用模块登记的办理能力；组待办先办先得，其余办理人显示已由他人处理；稍后处理只是本人显示偏好。",
+  "type": "object",
+  "required": [
+    "todoId",
+    "type",
+    "sourceRef",
+    "titleKey",
+    "state",
+    "assignees",
+    "openedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "todoId": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-zA-Z0-9.]*$"
+    },
+    "sourceRef": {
+      "type": "string"
+    },
+    "titleKey": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+    },
+    "params": {
+      "type": "object"
+    },
+    "dueAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "enum": [
+        "open",
+        "done",
+        "withdrawn"
+      ]
+    },
+    "doneBy": {
+      "type": "string"
+    },
+    "doneAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "openedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assignees": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "state"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "open",
+              "done",
+              "done_by_other",
+              "withdrawn"
+            ]
+          },
+          "snoozedUntil": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "done"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "doneBy",
+          "doneAt"
+        ],
+        "properties": {
+          "assignees": {
+            "items": {
+              "properties": {
+                "state": {
+                  "enum": [
+                    "done",
+                    "done_by_other"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "open"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "doneBy"
+          ]
+        },
+        "properties": {
+          "assignees": {
+            "items": {
+              "properties": {
+                "state": {
+                  "const": "open"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
