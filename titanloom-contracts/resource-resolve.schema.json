@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/resource-resolve/0.1",
+  "title": "ResourceResolve（稳定链接解析结果）",
+  "description": "来源：后端详细设计·插件宿主 · Shell · 平台管理（M1）E、H5、H6；Shell 4。稳定链接 /r/<模块>/<类型>/<编号> 不含部门；对无权者 not_your_dept 与 not_found 不区分存在性；模块不可用单独返回。",
+  "type": "object",
+  "required": [
+    "ref",
+    "outcome"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "ref": {
+      "type": "string",
+      "pattern": "^/r/[a-z][a-z0-9_]*/[a-z][a-zA-Z0-9]*/[A-Za-z0-9_-]+$"
+    },
+    "outcome": {
+      "enum": [
+        "open",
+        "switch_scope",
+        "not_your_dept",
+        "no_permission",
+        "module_unavailable",
+        "deleted",
+        "not_found"
+      ]
+    },
+    "route": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "dept",
+            "project"
+          ]
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "requestable": {
+      "type": "boolean"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "open",
+              "switch_scope"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "route"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "switch_scope"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "scope"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "not_your_dept",
+              "not_found",
+              "module_unavailable"
+            ]
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "title"
+              ]
+            },
+            {
+              "required": [
+                "route"
+              ]
+            }
+          ]
+        }
+      },
+      "description": "不泄露名称与地址"
+    }
+  ]
+}

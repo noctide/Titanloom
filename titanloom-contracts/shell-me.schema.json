@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/shell-me/0.1",
+  "title": "ShellMe（我的外壳）",
+  "description": "来源：后端详细设计·插件宿主 · Shell · 平台管理（M1）D、H4；Shell 4、5。登录后一次返回；导航与功能状态由后端按权限算好；角标来源不可用时为 null 而非 0；带权限版本、组合版本与范围代次。",
+  "type": "object",
+  "required": [
+    "person",
+    "depts",
+    "lang",
+    "tz",
+    "scopeMenu",
+    "currentScope",
+    "scopeEpoch",
+    "nav",
+    "features",
+    "langPack",
+    "badges",
+    "policyRev",
+    "compositionVersion"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "person": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "depts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0
+    },
+    "lang": {
+      "enum": [
+        "zh-CN",
+        "en-US"
+      ]
+    },
+    "tz": {
+      "type": "string"
+    },
+    "skin": {
+      "type": "string"
+    },
+    "scopeMenu": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "id"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "dept",
+              "project",
+              "dept_settings",
+              "project_settings",
+              "admin_spaces"
+            ]
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "currentScope": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "dept",
+            "project"
+          ]
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "scopeEpoch": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "nav": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pageId",
+          "labelKey",
+          "state"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "pageId": {
+            "type": "string"
+          },
+          "labelKey": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+          },
+          "state": {
+            "enum": [
+              "ok",
+              "unavailable",
+              "degraded"
+            ]
+          },
+          "route": {
+            "type": "string",
+            "pattern": "^/"
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "allowed",
+          "requestable",
+          "hidden"
+        ]
+      }
+    },
+    "homeRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "langPack": {
+      "type": "object",
+      "required": [
+        "lang",
+        "version"
+      ],
+      "properties": {
+        "lang": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "badges": {
+      "type": "object",
+      "required": [
+        "todo",
+        "messages"
+      ],
+      "properties": {
+        "todo": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "messages": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "ring": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "agent",
+          "todo",
+          "support",
+          "feedback",
+          "pick"
+        ]
+      },
+      "maxItems": 5
+    },
+    "policyRev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "compositionVersion": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

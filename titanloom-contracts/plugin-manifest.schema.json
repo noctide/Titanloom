@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/plugin-manifest/0.1",
+  "title": "PluginManifest（插件清单）",
+  "description": "来源：后端详细设计·插件宿主 · Shell · 平台管理（M1）A、B、H1、H7；插件与扩展体系 1.1、2.2、6.1。每个模块（含底座）一份；没写进清单的运行时登记不进去。titanloom.* 只给官方内置；core 不可卸载；排空时间上限 600 秒。",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "kind",
+    "removable",
+    "requires",
+    "provides",
+    "registers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "kind": {
+      "enum": [
+        "core",
+        "domain",
+        "shell",
+        "admin",
+        "integration",
+        "skin"
+      ]
+    },
+    "removable": {
+      "type": "boolean"
+    },
+    "requires": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "range"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "range": {
+                "type": "string",
+                "minLength": 1
+              },
+              "degrade": {
+                "enum": [
+                  "skip_step",
+                  "pause",
+                  "disable_self"
+                ]
+              }
+            }
+          }
+        },
+        "extensionPoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "range"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "range": {
+                "type": "string",
+                "minLength": 1
+              },
+              "degrade": {
+                "enum": [
+                  "skip_step",
+                  "pause",
+                  "disable_self"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "provides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "version"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^\\d+\\.\\d+\\.\\d+$"
+              },
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "extensionPoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "version",
+              "cardinality",
+              "thirdParty"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^\\d+\\.\\d+\\.\\d+$"
+              },
+              "cardinality": {
+                "enum": [
+                  "one",
+                  "many"
+                ]
+              },
+              "thirdParty": {
+                "type": "boolean"
+              },
+              "timeoutMs": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "registers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "route",
+              "devices"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "route": {
+                "type": "string",
+                "pattern": "^/"
+              },
+              "devices": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "desktop",
+                    "mobile"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "nav": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "slot",
+              "order",
+              "labelKey"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "slot": {
+                "type": "string"
+              },
+              "order": {
+                "type": "integer"
+              },
+              "labelKey": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+              },
+              "pageId": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "slots": {
+          "type": "array"
+        },
+        "schedules": {
+          "type": "array"
+        },
+        "i18n": {
+          "type": "string"
+        },
+        "search": {
+          "type": "object"
+        }
+      }
+    },
+    "drainSec": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 600
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "degradedAfterMs": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "core"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "removable": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "skin"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "registers": {
+            "propertyNames": {
+              "enum": [
+                "i18n"
+              ]
+            }
+          },
+          "provides": {
+            "maxProperties": 0
+          }
+        }
+      },
+      "description": "皮肤包只有样式令牌，不提供服务、不登记能力"
+    }
+  ]
+}

@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### 2026-10-17｜后端详细设计 · 插件宿主 · Shell · 平台管理（M1）——M1 后端设计齐
+
+设计页 sketch-backend-m1-shell v1 经维护者确认（H 节 7 处"同意"）。
+
+-   **新增《后端详细设计 · 插件宿主 · Shell · 平台管理（M1）》**：插件树与清单、组合版本；装配与不重启停用；服务与扩展点；我的外壳；稳定链接解析；平台管理最小闭环与总览；健康三态；设计页写法约定（每页最多 3 处决定）。
+-   **ADR-030**。插件体系、开发项目划分同步。
+-   **契约**：新增 plugin-manifest、composition-version、shell-me、resource-resolve、plugin-health 与 test_contracts_part12。
+
 ### 2026-10-17｜后端详细设计 · 公共设施（文件 · 审计 · 通知与待办）
 
 公共设施设计页（sketch-backend-facilities v1）经维护者确认（I 节 7 处"可以"），写成文档与契约。M1 三个底座（身份与权限、命令与任务、公共设施）后端设计完成。
