@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/schedule-rule/0.1",
+  "title": "ScheduleRule（定时规则）",
+  "description": "来源：后端详细设计·命令与任务 H、L5；工具自动化 9。按 IANA 时区展开计划时刻，存 UTC；默认业务时区；必须声明错过策略与重叠策略（默认不补跑、上次未结束本次跳过）；补跑必须有上限。",
+  "type": "object",
+  "required": [
+    "ruleId",
+    "ownerModule",
+    "bindingRef",
+    "rrule",
+    "timeZone",
+    "misfire",
+    "overlap",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "ruleId": {
+      "type": "string"
+    },
+    "ownerModule": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "bindingRef": {
+      "type": "string"
+    },
+    "rrule": {
+      "type": "string",
+      "pattern": "^(FREQ=|RRULE:FREQ=)"
+    },
+    "timeZone": {
+      "type": "string",
+      "pattern": "^[A-Za-z_]+(/[A-Za-z0-9_+-]+)+$"
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validTo": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "misfire": {
+      "type": "object",
+      "required": [
+        "policy"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "policy": {
+          "enum": [
+            "skip",
+            "catch_up"
+          ]
+        },
+        "maxCatchUp": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "withinHours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 168
+        }
+      }
+    },
+    "overlap": {
+      "enum": [
+        "skip_new",
+        "allow"
+      ]
+    },
+    "status": {
+      "enum": [
+        "active",
+        "paused",
+        "ended"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "misfire": {
+            "properties": {
+              "policy": {
+                "const": "catch_up"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "misfire": {
+            "required": [
+              "maxCatchUp",
+              "withinHours"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
