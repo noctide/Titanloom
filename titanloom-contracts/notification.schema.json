@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/notification/0.1",
+  "title": "Notification（站内通知）",
+  "description": "来源：后端详细设计·公共设施 D、I4；后台治理 11.3。按收件人语言渲染并记语言包版本；只含摘要文案键与参数和受控链接，不含业务明细、密钥与长期附件链接；同一收件人同一去重键 5 分钟内合并计数。",
+  "type": "object",
+  "required": [
+    "notificationId",
+    "recipientId",
+    "type",
+    "category",
+    "subjectRef",
+    "severity",
+    "messageKey",
+    "lang",
+    "packVersion",
+    "dedupeKey",
+    "createdAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "notificationId": {
+      "type": "string"
+    },
+    "recipientId": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-zA-Z0-9.]*$"
+    },
+    "category": {
+      "enum": [
+        "approval",
+        "task_result",
+        "must_read",
+        "system",
+        "collaboration",
+        "account_security",
+        "alert"
+      ]
+    },
+    "subjectRef": {
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ]
+    },
+    "messageKey": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+    },
+    "params": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-zA-Z0-9]*$"
+      }
+    },
+    "link": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "lang": {
+      "enum": [
+        "zh-CN",
+        "en-US"
+      ]
+    },
+    "packVersion": {
+      "type": "string"
+    },
+    "dedupeKey": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "mergedCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "readAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

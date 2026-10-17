@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/notify-pref/0.1",
+  "title": "NotifyPref（个人通知设置）",
+  "description": "来源：后端详细设计·公共设施 D、I4。按类别选渠道；必读、审批、账户安全不能关站内；免打扰只作用于个人外部渠道，且只能比平台时段更窄。",
+  "type": "object",
+  "required": [
+    "accountId",
+    "category",
+    "channels"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "accountId": {
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "approval",
+        "task_result",
+        "must_read",
+        "system",
+        "collaboration",
+        "account_security",
+        "alert"
+      ]
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "in_app",
+          "external"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "quietFrom": {
+      "type": "string",
+      "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "quietTo": {
+      "type": "string",
+      "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "category": {
+            "enum": [
+              "approval",
+              "must_read",
+              "account_security"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "channels": {
+            "contains": {
+              "const": "in_app"
+            }
+          }
+        }
+      },
+      "description": "不可关闭类别"
+    }
+  ]
+}

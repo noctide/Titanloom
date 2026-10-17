@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/asset-version/0.1",
+  "title": "AssetVersion（文件版本）",
+  "description": "来源：后端详细设计·公共设施 B、I1、I2；能力契约 9.4；后台治理 11.1。字节按内容指纹存一份，去重不合并授权；业务只引用 assetId + version；检查未过进隔离，不可下载。不含服务器路径。",
+  "type": "object",
+  "required": [
+    "assetId",
+    "version",
+    "blobSha256",
+    "size",
+    "mimeSniffed",
+    "state",
+    "checks",
+    "createdAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "assetId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "blobSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 209715200
+    },
+    "mimeSniffed": {
+      "type": "string",
+      "pattern": "^[a-z]+/[a-z0-9.+-]+$"
+    },
+    "originalName": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "state": {
+      "enum": [
+        "checking",
+        "available",
+        "quarantined",
+        "withdrawn",
+        "pending_purge",
+        "purged"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "required": [
+        "typeSniff",
+        "format",
+        "virusScan"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "typeSniff": {
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "format": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_applicable"
+          ]
+        },
+        "virusScan": {
+          "enum": [
+            "not_performed",
+            "pass",
+            "fail"
+          ],
+          "description": "首期 not_performed（不装杀毒，I2）"
+        },
+        "rejectReasonKey": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)?:[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$"
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "available"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "checks": {
+            "properties": {
+              "typeSniff": {
+                "const": "pass"
+              },
+              "format": {
+                "enum": [
+                  "pass",
+                  "not_applicable"
+                ]
+              },
+              "virusScan": {
+                "enum": [
+                  "not_performed",
+                  "pass"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "checks": {
+            "anyOf": [
+              {
+                "properties": {
+                  "typeSniff": {
+                    "const": "fail"
+                  }
+                },
+                "required": [
+                  "typeSniff"
+                ]
+              },
+              {
+                "properties": {
+                  "format": {
+                    "const": "fail"
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              },
+              {
+                "properties": {
+                  "virusScan": {
+                    "const": "fail"
+                  }
+                },
+                "required": [
+                  "virusScan"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "enum": [
+              "quarantined",
+              "withdrawn",
+              "pending_purge",
+              "purged"
+            ]
+          },
+          "checks": {
+            "required": [
+              "rejectReasonKey"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

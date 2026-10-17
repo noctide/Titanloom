@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titanloom.local/contracts/asset-ref/0.1",
+  "title": "AssetRef（文件引用）",
+  "description": "来源：后端详细设计·公共设施 B。谁能看文件 = 谁能看引用它的对象；下载时由引用模块 check。每个引用各自鉴权，不因同一字节而互通。",
+  "type": "object",
+  "required": [
+    "assetId",
+    "version",
+    "refModule",
+    "refObject",
+    "createdAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "assetId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "refModule": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "refObject": {
+      "type": "string"
+    },
+    "refField": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
